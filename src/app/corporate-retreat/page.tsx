@@ -352,7 +352,7 @@ export default function CorporateRetreatPage() {
         subtitle="Build Stronger Teams, Boost Productivity & Reduce Burnout"
         stats={heroStats}
         ctas={heroCTAs}
-        variant="red"
+        variant="green"
         backgroundImage={images.hero}
       />
 
