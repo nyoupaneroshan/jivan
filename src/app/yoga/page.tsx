@@ -218,9 +218,9 @@ export default function YogaPage() {
           <ProgramComparison programs={programs} variant="green" />
         </div>
 
-        <BenefitsGrid benefits={benefits} variant="green" />
+        <BenefitsGrid benefits={benefits} />
 
-        <CurriculumGrid items={curriculumItems} variant="green" />
+        <CurriculumGrid items={curriculumItems}/>
 
         <CTASection
           title="Start Your Yoga Teaching Journey Today"
