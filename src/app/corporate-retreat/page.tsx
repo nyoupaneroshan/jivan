@@ -640,7 +640,7 @@ export default function CorporateRetreatPage() {
             title="Ready to Transform Your Team?"
             description="Let's discuss how a wellness retreat can benefit your organization"
             buttons={contactButtons}
-            variant="red"
+            variant="green"
             backgroundEmoji="🏢"
           />
         </section>
