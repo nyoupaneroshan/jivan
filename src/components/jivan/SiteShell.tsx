@@ -327,9 +327,16 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
         </header>
       </div>
 
-      {/* CONTENT */}
-      <main>{children}</main>
+            {/* CONTENT */}
+      <main
+        className={`transition-[padding-top] duration-300 ${
+          isTopBarVisible ? "pt-[120px] md:pt-[104px]" : "pt-[92px] md:pt-[80px]"
+        }`}
+      >
+        {children}
+      </main>
       <Footer onOpenAiChat={() => setAiChatOpen(true)} />
+
     </div>
   );
 }
