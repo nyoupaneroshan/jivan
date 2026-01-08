@@ -16,7 +16,6 @@ import {
 import { Footer } from "./Footer";
 import { ChatModal } from "@/app/ChatModal";
 
-// Helper functions for navigation items
 function getSubItems(item: any): any[] {
   return item.children?.length ? item.children : item.items?.length ? item.items : [];
 }
@@ -30,7 +29,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
   const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
   const [aiChatOpen, setAiChatOpen] = useState(false);
 
-  // Top bar visibility on scroll
+  // top bar visibility on scroll
   const [isTopBarVisible, setIsTopBarVisible] = useState(true);
 
   const pathname = usePathname();
@@ -42,7 +41,6 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
     };
   }, [isMobileMenuOpen]);
 
-  // Hide/show top bar based on scroll direction
   useEffect(() => {
     let lastY = window.scrollY;
 
@@ -83,42 +81,56 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen flex flex-col">
       <ChatModal open={aiChatOpen} onClose={() => setAiChatOpen(false)} />
 
-      {/* ===== TOP BAR + HEADER WRAPPER ===== */}
       <div className="fixed top-0 left-0 right-0 z-[1000] shadow-md">
-        {/* ===== TOP BAR (hide on scroll) ===== */}
+        {/* ===== TOP BAR (mobile-safe) ===== */}
         <div
-          className={`bg-[#06402B] text-white/90 text-[13px] overflow-hidden transition-all duration-300 ${
-            isTopBarVisible ? "max-h-[60px] opacity-100" : "max-h-0 opacity-0"
-          }`}
+          className={[
+            "bg-[#06402B] text-white/90 text-[13px] overflow-hidden transition-all duration-300",
+            isTopBarVisible
+              ? "max-h-[120px] sm:max-h-[110px] md:max-h-[60px] opacity-100"
+              : "max-h-0 opacity-0",
+          ].join(" ")}
         >
           <div className="py-2">
-            <div className="w-[92%] max-w-[1400px] mx-auto flex flex-col md:flex-row justify-between items-center gap-2">
-              <div className="flex flex-wrap justify-center md:justify-start gap-5 items-center">
-                <span className="flex items-center gap-1.5">
-                  <Mail size={14} />
-                  <a
-                    href="mailto:info@jivanparivartan.com"
-                    className="hover:text-white underline underline-offset-2"
+            <div className="w-[92%] max-w-[1400px] mx-auto">
+              {/* Mobile/tablet: 2-row grid | Desktop: single row */}
+              <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-2 items-center">
+                {/* Row 1: Email + Join */}
+                <div className="flex items-center justify-between gap-3">
+                  <span className="flex items-center gap-2 min-w-0">
+                    <Mail size={14} className="shrink-0" />
+                    <a
+                      href="mailto:info@jivanparivartan.com"
+                      className="hover:text-white underline underline-offset-2 truncate"
+                      title="info@jivanparivartan.com"
+                    >
+                      info@jivanparivartan.com
+                    </a>
+                  </span>
+
+                  <Link
+                    href="/contact"
+                    className="shrink-0 border border-white/30 px-4 py-1.5 rounded-full hover:bg-white hover:text-[#06402B] transition-all duration-300 text-xs font-medium"
                   >
-                    info@jivanparivartan.com
-                  </a>
-                </span>
+                    Join Us
+                  </Link>
+                </div>
 
-                <span className="flex items-center gap-1.5">
-                  <Phone size={14} /> +977 9818514837, 9863049261
-                </span>
+                {/* Row 2: Phone + Location (wraps cleanly on mobile) */}
+                <div className="flex flex-wrap items-center gap-x-5 gap-y-1 md:justify-end text-[12.5px]">
+                  <span className="flex items-center gap-2">
+                    <Phone size={14} className="shrink-0" />
+                    <span className="whitespace-nowrap">+977 9818514837</span>
+                    <span className="opacity-70">,</span>
+                    <span className="whitespace-nowrap">9863049261</span>
+                  </span>
 
-                <span className="flex items-center gap-1.5">
-                  <MapPin size={14} /> Tarkeshwor-5, Kathmandu
-                </span>
+                  <span className="flex items-center gap-2">
+                    <MapPin size={14} className="shrink-0" />
+                    <span className="whitespace-nowrap">Tarkeshwor-5, Kathmandu</span>
+                  </span>
+                </div>
               </div>
-
-              <Link
-                href="/contact"
-                className="border border-white/30 px-4 py-1.5 rounded-full cursor-pointer hover:bg-white hover:text-[#6E3B1F] transition-all duration-300 text-xs font-medium"
-              >
-                Join Us
-              </Link>
             </div>
           </div>
         </div>
@@ -126,7 +138,6 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
         {/* ===== HEADER ===== */}
         <header className="text-white py-3 bg-gradient-to-r from-[#0F5D8A] via-[#2B78B9] to-[#58A6E8]">
           <div className="w-[92%] max-w-[1400px] mx-auto flex items-center justify-between gap-10">
-            {/* Logo */}
             <Link href="/" className="flex items-center gap-4 z-[1001]">
               <img
                 src="/logo.png"
@@ -143,7 +154,6 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
               </div>
             </Link>
 
-            {/* Mobile Toggle */}
             <button
               className="md:hidden text-white z-[1001]"
               onClick={toggleMobileMenu}
@@ -178,7 +188,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
                       </span>
                     </Link>
 
-                    {/* ===== MEGA MENU ===== */}
+                    {/* Mega menu */}
                     {item.type === "mega" && item.children && (
                       <div className="invisible opacity-0 translate-y-2 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 absolute left-[-200px] top-full bg-white text-gray-800 shadow-2xl rounded-xl w-[900px] z-[100] p-8 transition-all duration-200">
                         <div className="grid grid-cols-2 gap-9">
@@ -211,7 +221,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
                       </div>
                     )}
 
-                    {/* ===== DROPDOWN (RECURSIVE) ===== */}
+                    {/* Dropdown (recursive) */}
                     {item.type === "dropdown" && item.children && (
                       <ul className="invisible opacity-0 translate-y-2 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 absolute left-0 top-full bg-white shadow-xl rounded-lg min-w-[260px] py-2 transition-all duration-200 z-[100]">
                         {item.children.map((subItem: any) => {
@@ -300,7 +310,9 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
                               isOpen ? "max-h-[1200px]" : "max-h-0"
                             }`}
                           >
-                            <ul>{children.map((child: any) => renderMobileItem(child, depth + 1))}</ul>
+                            <ul>
+                              {children.map((child: any) => renderMobileItem(child, depth + 1))}
+                            </ul>
                           </div>
                         )}
                       </li>
@@ -315,7 +327,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
         </header>
       </div>
 
-      {/* ===== CONTENT + FOOTER ===== */}
+      {/* CONTENT */}
       <main>{children}</main>
       <Footer onOpenAiChat={() => setAiChatOpen(true)} />
     </div>
