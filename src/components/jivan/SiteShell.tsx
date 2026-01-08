@@ -30,7 +30,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
   const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
   const [aiChatOpen, setAiChatOpen] = useState(false);
 
-  // NEW: top bar visibility on scroll
+  // Top bar visibility on scroll
   const [isTopBarVisible, setIsTopBarVisible] = useState(true);
 
   const pathname = usePathname();
@@ -42,21 +42,19 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
     };
   }, [isMobileMenuOpen]);
 
-  // NEW: hide/show top bar based on scroll direction
+  // Hide/show top bar based on scroll direction
   useEffect(() => {
     let lastY = window.scrollY;
 
     const onScroll = () => {
       const y = window.scrollY;
 
-      // always show near top
       if (y < 30) {
         setIsTopBarVisible(true);
         lastY = y;
         return;
       }
 
-      // hide on scroll down, show on scroll up
       if (y > lastY) setIsTopBarVisible(false);
       else setIsTopBarVisible(true);
 
@@ -157,7 +155,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
             {/* ===== DESKTOP NAV ===== */}
             <nav className="hidden md:flex flex-1 justify-end">
               <ul className="flex items-center gap-1">
-                {navigationMenu.map((item) => (
+                {navigationMenu.map((item: any) => (
                   <li key={item.id} className="relative group z-10 hover:z-[200]">
                     <Link
                       href={item.href}
@@ -217,7 +215,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
                     {item.type === "dropdown" && item.children && (
                       <ul className="invisible opacity-0 translate-y-2 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 absolute left-0 top-full bg-white shadow-xl rounded-lg min-w-[260px] py-2 transition-all duration-200 z-[100]">
                         {item.children.map((subItem: any) => {
-                          const renderDropdownItem = (navItem: any): JSX.Element => {
+                          const renderDropdownItem = (navItem: any): React.ReactElement => {
                             const children = getSubItems(navItem);
                             const expandable = hasSubItems(navItem);
 
@@ -228,9 +226,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
                                   className="flex items-center justify-between gap-3 px-5 py-2.5 text-sm text-gray-700 hover:bg-[#f5f0ff] hover:text-[#8B0000] transition-all"
                                 >
                                   <span className="leading-none">{navItem.label}</span>
-                                  {expandable && (
-                                    <ChevronRight size={16} className="text-gray-400" />
-                                  )}
+                                  {expandable && <ChevronRight size={16} className="text-gray-400" />}
                                 </Link>
 
                                 {expandable && (
@@ -259,7 +255,10 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
             >
               <ul>
                 {navigationMenu.map((item: any) => {
-                  const renderMobileItem = (navItem: any, depth: number = 0): JSX.Element => {
+                  const renderMobileItem = (
+                    navItem: any,
+                    depth: number = 0
+                  ): React.ReactElement => {
                     const children = getSubItems(navItem);
                     const expandable = hasSubItems(navItem);
                     const isOpen = activeSubmenu === navItem.id;
@@ -317,8 +316,6 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
       </div>
 
       {/* ===== CONTENT + FOOTER ===== */}
-      {/* NOTE: because header is fixed, your pages likely need top padding somewhere
-         (layout or page wrapper) to avoid being hidden under the header. */}
       <main>{children}</main>
       <Footer onOpenAiChat={() => setAiChatOpen(true)} />
     </div>
