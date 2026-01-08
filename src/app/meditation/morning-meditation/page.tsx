@@ -288,7 +288,7 @@ export default function MorningMeditationPage() {
         stats={heroStats}
         ctas={heroCTAs}
         // Orange theme in PHP [file:2]
-        variant="red"
+        variant="green"
         backgroundImage="/img/morning-meditation-hero.jpg"
       />
 
@@ -451,7 +451,7 @@ export default function MorningMeditationPage() {
                 title="Join Our Morning Meditation Community"
                 description="Start transforming your mornings and your life today"
                 buttons={ctaButtons}
-                variant="red"
+                variant="green"
                 backgroundEmoji="🌅"
               />
             </section>

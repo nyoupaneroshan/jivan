@@ -512,7 +512,7 @@ export default function ServicesPage() {
               { icon: "✉️", label: "Email Us", href: "mailto:info@jivanparivartan.com" },
               { icon: "📝", label: "Contact Page", href: "/contact" },
             ]}
-            variant="red"
+            variant="green"
             backgroundEmoji="🌿"
           />
         </section>

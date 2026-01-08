@@ -342,7 +342,7 @@ export default function TransformationProgramPage() {
         subtitle="Break Through Limitations, Release Patterns & Awaken Your True Potential"
         stats={heroStats}
         ctas={heroCTAs}
-        variant="purple"
+        variant="green"
         backgroundImage="/img/transformation-hero.jpg"
       />
 
@@ -533,7 +533,7 @@ export default function TransformationProgramPage() {
                 title="Ready for Your Transformation?"
                 description="Limited spaces available—reserve your spot today"
                 buttons={ctaButtons}
-                variant="purple"
+                variant="green"
                 backgroundEmoji="🔮"
               />
             </section>

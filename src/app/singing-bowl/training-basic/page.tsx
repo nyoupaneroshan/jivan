@@ -423,7 +423,7 @@ export default function BasicSoundHealingCoursePage() {
         subtitle="Your Introduction to Singing Bowl Therapy"
         stats={heroStats}
         ctas={heroCTAs}
-        variant="red"
+        variant="green"
         backgroundImage="https://images.unsplash.com/photo-1599447292795-755c8f91d921?q=80&w=2670&auto=format&fit=crop"
       />
 
@@ -665,7 +665,7 @@ export default function BasicSoundHealingCoursePage() {
                 title="Ready to Begin Your Sound Healing Journey?"
                 description="Limited spots available—secure your place in the next batch"
                 buttons={ctaButtons}
-                variant="red"
+                variant="green"
                 backgroundEmoji="🎵"
               />
             </section>

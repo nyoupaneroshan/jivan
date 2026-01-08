@@ -111,7 +111,7 @@ export default function Yoga500HoursPage() {
         subtitle="Master the Art & Science of Traditional Yoga"
         stats={heroStats}
         ctas={heroCTAs}
-        variant="dark-red"
+        variant="green"
         backgroundImage="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=1920"
       />
 
@@ -125,7 +125,7 @@ export default function Yoga500HoursPage() {
               <IntroSection
                 title="Advanced Program Overview"
                 paragraphs={introParagraphs}
-                variant="dark-red"
+                variant="green"
               />
               <div className="text-center mt-6">
                 <span className="inline-block bg-gradient-to-br from-yellow-400 to-orange-500 text-gray-900 px-6 py-2 rounded-full text-sm font-bold">
@@ -305,7 +305,7 @@ export default function Yoga500HoursPage() {
                 title="Ready to Master Advanced Yoga?"
                 description="Join our next 500 Hours Advanced Training and become a master yoga teacher"
                 buttons={ctaButtons}
-                variant="dark-red"
+                variant="green"
                 backgroundEmoji="🧘"
               />
             </section>

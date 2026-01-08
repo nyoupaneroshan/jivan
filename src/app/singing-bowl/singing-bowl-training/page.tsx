@@ -193,7 +193,7 @@ export default function SingingBowlTrainingPage() {
         subtitle="Become a Certified Sound Healing Practitioner"
         stats={heroStats}
         ctas={heroCTAs}
-        variant="red"
+        variant="green"
         backgroundImage="https://images.unsplash.com/photo-1545389336-cf090694435e?q=80&w=2664&auto=format&fit=crop"
       />
 
@@ -327,7 +327,7 @@ export default function SingingBowlTrainingPage() {
                 title="Start Your Sound Healing Journey"
                 description="Join our next training batch and become a certified practitioner"
                 buttons={ctaButtons}
-                variant="red"
+                variant="green"
                 backgroundEmoji="🎓"
               />
             </section>

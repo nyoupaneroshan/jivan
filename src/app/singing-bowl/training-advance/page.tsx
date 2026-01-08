@@ -407,7 +407,7 @@ export default function ProfessionalPractitionerCoursePage() {
         subtitle="Become a Certified Sound Healing Professional"
         stats={heroStats}
         ctas={heroCTAs}
-        variant="red"
+        variant="green"
         backgroundImage="https://images.unsplash.com/photo-1600618528240-fb9fc964b853?q=80&w=2670&auto=format&fit=crop"
       />
 
@@ -625,7 +625,7 @@ export default function ProfessionalPractitionerCoursePage() {
                 title="Launch Your Professional Sound Healing Career"
                 description="Transform lives while building a meaningful, sustainable practice"
                 buttons={ctaButtons}
-                variant="red"
+                variant="green"
                 backgroundEmoji="🎓"
               />
             </section>

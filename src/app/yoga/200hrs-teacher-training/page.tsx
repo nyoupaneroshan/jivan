@@ -330,7 +330,7 @@ export default function Yoga200HoursPage() {
                 title="Ready to Begin Your Journey?"
                 description="Join our next batch and transform your life through the ancient science of yoga"
                 buttons={ctaButtons}
-                variant="red"
+                variant="green"
                 backgroundEmoji="🧘"
               />
             </section>

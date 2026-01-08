@@ -273,7 +273,7 @@ export default function LuxuryHimalayanRetreatPage() {
         stats={heroStats}
         ctas={heroCTAs}
         // If "gold" variant doesn't exist, keep "red" and style sections with yellow/gold classes.
-        variant="red"
+        variant="green"
         backgroundImage={images.hero}
       />
 
@@ -522,7 +522,7 @@ export default function LuxuryHimalayanRetreatPage() {
             description="Limited spots available for this exclusive experience"
             buttons={ctaButtons}
             // keep variant aligned with existing components (unknown if gold exists)
-            variant="red"
+            variant="green"
             backgroundEmoji="🏔️"
             // If your CTASection supports a background image prop, add it here.
           />
