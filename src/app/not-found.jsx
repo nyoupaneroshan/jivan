@@ -67,7 +67,7 @@ export default function NotFound() {
             {/* Helpful links (single column on mobile) */}
             <div className="mt-10 grid grid-cols-3 gap-4 md:grid-cols-3 sm:grid-cols-1">
               {[
-                { label: "Explore Programs", href: "/programs", desc: "Browse all offerings." },
+                { label: "Explore Programs", href: "/services", desc: "Browse all offerings." },
                 { label: "Meditation & Retreat", href: "/meditation", desc: "Find stillness & renewal." },
                 { label: "Reiki Healing", href: "/reiki", desc: "Balance energy & calm." },
               ].map((x) => (
