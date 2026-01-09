@@ -1,5 +1,5 @@
 // src/app/sitemap.js
-// Generates https://yourdomain.com/sitemap.xml
+// Generates https://jivanparivartan.com/sitemap.xml
 import { navigationMenu } from "@/lib/nav";
 
 export const revalidate = 3600; // refresh every 1 hour
