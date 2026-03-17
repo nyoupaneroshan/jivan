@@ -126,7 +126,7 @@ export default function ReikiHealingSessionPage() {
     },
     {
       icon: "📦",
-      title: "Healing Package",
+      title: "Healing Packages",
       duration: "Series of 5 Sessions",
       description:
         "A progressive healing journey across multiple sessions for deeper transformation, consistent support, and longer-term results.",
