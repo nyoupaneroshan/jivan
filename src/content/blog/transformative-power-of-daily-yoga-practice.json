@@ -1,0 +1,19 @@
+{
+  "id": "transformative-power-of-daily-yoga-practice",
+  "slug": "transformative-power-of-daily-yoga-practice",
+  "title": "The Transformative Power of Daily Yoga Practice",
+  "excerpt": "Discover how establishing a consistent yoga routine can transform your physical health, mental clarity, and spiritual awareness. Learn practical tips for maintaining your practice.",
+  "category": "yoga",
+  "author": "Yogi Adwaitmani",
+  "date": "2026-01-25",
+  "readTime": "5 min read",
+  "image": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800",
+  "featured": true,
+  "content": [
+    { "type": "h2", "text": "Why daily yoga works" },
+    { "type": "p", "text": "Daily yoga does not need to be long. Ten minutes of consistent practice often creates more change than one intense session per week." },
+    { "type": "h2", "text": "A simple weekly plan" },
+    { "type": "ul", "items": ["Day 1: Mobility and breath", "Day 2: Sun salutations", "Day 3: Hips and hamstrings", "Day 4: Gentle backbends", "Day 5: Balance and core", "Day 6: Restorative", "Day 7: Meditation + pranayama"] }
+  ],
+  "tags": ["yoga", "routine", "wellness"]
+}
