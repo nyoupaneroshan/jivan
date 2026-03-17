@@ -11,7 +11,7 @@ type Lang = "en" | "np";
 
 // ─── Seats & Deadline Config ──────────────────────────────────────────────────
 const TOTAL_SEATS: number = 25;
-const AVAILABLE_SEATS: number = 23.0;
+const AVAILABLE_SEATS: number = 23;
 
 // ─── Bilingual Content ────────────────────────────────────────────────────────
 const t = {
