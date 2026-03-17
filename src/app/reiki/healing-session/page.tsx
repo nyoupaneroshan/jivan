@@ -69,31 +69,31 @@ export default function ReikiHealingSessionPage() {
         "Deep relaxation that calms the nervous system, reduces cortisol, and promotes a peaceful state of mind.",
     },
     {
-      icon: "💪",
+      icon: "",
       title: "Pain Management",
       description:
         "Natural support for chronic conditions, headaches, muscle tension, and physical discomfort through relaxation and energy flow.",
     },
     {
-      icon: "❤️",
+      icon: "",
       title: "Emotional Healing",
       description:
         "Release emotional blockages, support healing from past experiences, and restore emotional balance with gentle energy work.",
     },
     {
-      icon: "⚡",
+      icon: "",
       title: "Energy Balancing",
       description:
         "Clear chakra blockages, restore energy flow, and harmonize subtle energy systems for steadiness and vitality.",
     },
     {
-      icon: "🌟",
+      icon: "",
       title: "Immune Support",
       description:
         "Strengthen the body’s natural healing response by supporting deep rest, recovery, and regulation.",
     },
     {
-      icon: "🧠",
+      icon: "",
       title: "Mental Clarity",
       description:
         "Reduce mental clutter and support focus by settling the mind into a calm, restorative state.",
