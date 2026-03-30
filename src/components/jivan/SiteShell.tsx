@@ -8,6 +8,7 @@ import { Mail, Phone, MapPin, Menu, X, ChevronDown, ChevronRight } from "lucide-
 import { Footer } from "./Footer";
 import { ChatModal } from "@/app/ChatModal";
 import { PopupProvider } from "@/lib/popup-context";
+import Script from "next/script";
 
 
 type AnyNavItem = any;
@@ -234,6 +235,16 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
 
   return (
      <PopupProvider>   
+        {/* Google Analytics */}
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M5L01Q3MXY"></script>
+ <Script id="google-analytics" strategy="afterInteractive">
+    {`
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-M5L01Q3MXY');
+    `}
+  </Script>
     <div className="min-h-screen flex flex-col">
       <ChatModal open={aiChatOpen} onClose={() => setAiChatOpen(false)} />
 

@@ -205,7 +205,14 @@ export function Footer({ onOpenAiChat }: { onOpenAiChat: () => void }) {
 
           <p className="text-[13px] text-white/50 transition-colors duration-300 hover:text-white/70">
             Designed & Developed by{" "}
-            <span className="text-white/80 font-semibold">11 TechMedia</span>
+            <a 
+  href="https://11techmedia.com.np/" 
+  target="_blank" 
+  rel="noopener noreferrer"
+  className="text-white/80 font-semibold hover:text-white hover:underline transition-all"
+>
+  11 TechMedia
+</a>
           </p>
         </div>
       </div>
