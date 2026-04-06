@@ -11,7 +11,7 @@ type Lang = "en" | "np";
 
 // ─── Seats & Deadline Config ──────────────────────────────────────────────────
 const TOTAL_SEATS: number = 25;
-const AVAILABLE_SEATS: number = 23;
+const AVAILABLE_SEATS: number = 10;
 
 // ─── Bilingual Content ────────────────────────────────────────────────────────
 const t = {
@@ -88,13 +88,13 @@ const t = {
     durationLabel: "Duration", durationVal: "4 Days / 3 Nights",
     feeLabel: "Registration Fee", feeVal: "Rs. 28,000", feeSub: "Per person · Includes accommodation & meals",
     transportLabel: "Transportation", transportVal: "Not included — manage independently",
-    deadlineLabel: "Booking Deadline", deadlineVal: "April 1st, 2026", deadlineSub: "Last day for registrations",
+    deadlineLabel: "Booking Deadline", deadlineVal: "April 15th, 2026", deadlineSub: "Last day for registrations",
 
     seatsTitle: "Available Seats",
     seatsFull: "Fully Booked",
     seatsUrgency: "Limited spots available — register early to secure your place.",
     deadlineTitle: "⏳ Booking Deadline",
-    deadlineNote: "Registrations close on April 1st, 2026. Secure your seat before it's too late.",
+    deadlineNote: "Registrations close on April 15th, 2026. Secure your seat before it's too late.",
 
     registerBtn: "Register via WhatsApp",
     paymentTitle: "💳 Payment Details",
@@ -104,7 +104,7 @@ const t = {
     qrLabel: "Scan QR to Pay",
     receiptBtn: "Send Payment Receipt via WhatsApp",
     receiptNote: "After completing the transfer, please send us your payment screenshot or receipt via WhatsApp to confirm your booking.",
-    cancellationNote: "The deposit is non-refundable. Cancellations after April 1st, 2026 will not be eligible for a refund. Please confirm your availability before registering.",
+    cancellationNote: "The deposit is non-refundable. Cancellations after April 15th, 2026 will not be eligible for a refund. Please confirm your availability before registering.",
     cancellationTitle: "⚠️ Cancellation Policy:",
     contactTitle: "📞 Contact Us",
     allProgramsBtn: "← All Programs",
