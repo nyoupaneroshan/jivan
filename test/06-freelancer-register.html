@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+  <title>Jivan — Join as Trainer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <style>
+    :root {
+      --font-display:'Cormorant Garamond',Georgia,serif;
+      --font-body:'Plus Jakarta Sans',system-ui,sans-serif;
+      --clr-forest:#1a3a2e; --clr-teal:#2d7d6e; --clr-teal-lt:#3d9e8c;
+      --clr-gold:#c9a84c;   --clr-gold-lt:#e6c97a;
+      --clr-cream:#f5f0e8;  --clr-cream-dk:#ede6d8;
+      --clr-bg:#f4f0ea;     --clr-white:#ffffff;
+      --clr-text:#1e2d24;   --clr-muted:#5a7266;  --clr-faint:#9ab5ac;
+      --clr-border:#ddd8cf;
+      --r-sm:6px; --r-md:12px; --r-lg:18px; --r-xl:24px; --r-full:9999px;
+      --ease-out:cubic-bezier(0.16,1,0.3,1);
+      --ease-spring:cubic-bezier(0.34,1.56,0.64,1);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{-webkit-font-smoothing:antialiased}
+    body{font-family:var(--font-body);background:#0d1f17;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100dvh;padding:16px}
+    button,input,textarea,select{cursor:pointer;border:none;background:none;font:inherit}
+    input,textarea,select{cursor:text}
+
+    /* ── PHONE ─────────────────── */
+    .phone{width:390px;height:844px;border-radius:48px;overflow:hidden;position:relative;box-shadow:0 40px 100px rgba(0,0,0,0.65),0 0 0 1px rgba(255,255,255,0.07);background:var(--clr-bg);display:flex;flex-direction:column}
+
+    /* STATUS BAR */
+    .status-bar{flex-shrink:0;height:52px;display:flex;align-items:center;justify-content:space-between;padding:14px 28px 0;background:var(--clr-forest)}
+    .status-bar .time{font-size:15px;font-weight:600;color:#fff;letter-spacing:-0.3px}
+    .status-icons{display:flex;gap:4px;align-items:center;color:#fff}
+
+    /* ── HERO HEADER ───────────── */
+    .hero{background:var(--clr-forest);padding:16px 24px 24px;position:relative;overflow:hidden;flex-shrink:0}
+    .hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 260px 200px at 90% 50%,rgba(45,125,110,0.35) 0%,transparent 70%),radial-gradient(ellipse 150px 150px at -10% 80%,rgba(201,168,76,0.2) 0%,transparent 60%)}
+    .hero-row{display:flex;align-items:center;gap:12px;position:relative;z-index:1;margin-bottom:14px}
+    .back-btn{width:38px;height:38px;border-radius:var(--r-full);background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;color:var(--clr-cream);flex-shrink:0;transition:background .2s}
+    .back-btn:hover{background:rgba(255,255,255,0.18)}
+    .hero-title{font-family:var(--font-display);font-size:22px;font-weight:600;color:var(--clr-cream);flex:1;line-height:1.1}
+    .earn-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(201,168,76,0.2);color:var(--clr-gold);font-size:12px;font-weight:700;padding:5px 14px;border-radius:var(--r-full);position:relative;z-index:1}
+
+    /* ── STEP PROGRESS ─────────── */
+    .step-progress{flex-shrink:0;background:var(--clr-forest);padding:0 24px 18px;position:relative;z-index:1}
+    .sp-track{height:3px;background:rgba(255,255,255,0.15);border-radius:2px;position:relative;overflow:hidden}
+    .sp-fill{height:100%;background:linear-gradient(90deg,var(--clr-gold),var(--clr-gold-lt));border-radius:2px;transition:width .5s var(--ease-out)}
+    .sp-dots{display:flex;justify-content:space-between;margin-top:10px}
+    .sp-dot{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer}
+    .spd-circle{width:28px;height:28px;border-radius:var(--r-full);border:2px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:rgba(255,255,255,0.35);transition:all .35s var(--ease-out);background:transparent}
+    .sp-dot.done .spd-circle{background:var(--clr-teal);border-color:var(--clr-teal);color:white}
+    .sp-dot.active .spd-circle{background:var(--clr-gold);border-color:var(--clr-gold);color:var(--clr-forest);box-shadow:0 0 0 4px rgba(201,168,76,0.25)}
+    .spd-lbl{font-size:9px;font-weight:600;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap}
+    .sp-dot.done .spd-lbl,.sp-dot.active .spd-lbl{color:rgba(255,255,255,0.8)}
+
+    /* ── SCROLL AREA ───────────── */
+    .scroll-body{flex:1;overflow-y:auto;overflow-x:hidden}
+    .scroll-body::-webkit-scrollbar{display:none}
+
+    /* ── STEP PANEL ────────────── */
+    .step-panel{display:none;padding:20px 20px 0;animation:stepIn .35s var(--ease-out) both}
+    .step-panel.show{display:block}
+    @keyframes stepIn{from{opacity:0;transform:translateX(22px)}to{opacity:1;transform:translateX(0)}}
+
+    .step-heading{font-family:var(--font-display);font-size:26px;font-weight:600;color:var(--clr-text);margin-bottom:4px;line-height:1.2}
+    .step-sub{font-size:13px;color:var(--clr-muted);margin-bottom:22px;line-height:1.5}
+
+    /* Input group */
+    .input-group{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+    .input-label{font-size:11px;font-weight:700;color:var(--clr-muted);letter-spacing:0.5px;text-transform:uppercase}
+    .input-wrap{position:relative}
+    .input-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--clr-faint);pointer-events:none;transition:color .2s}
+    .input-field{width:100%;height:52px;border-radius:var(--r-md);border:1.5px solid var(--clr-border);background:white;font-size:15px;color:var(--clr-text);padding:0 14px 0 44px;outline:none;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none}
+    .input-field:focus{border-color:var(--clr-teal);box-shadow:0 0 0 3px rgba(45,125,110,0.1)}
+    .input-wrap:focus-within .input-icon{color:var(--clr-teal)}
+    textarea.input-field{height:90px;padding:14px 14px 14px 44px;resize:none;line-height:1.5}
+    select.input-field{appearance:none;-webkit-appearance:none;cursor:pointer}
+
+    /* Two-col row */
+    .row-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+    /* Specialty chips */
+    .chip-label{font-size:11px;font-weight:700;color:var(--clr-muted);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px}
+    .chip-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+    .spec-chip{display:flex;align-items:center;gap:6px;padding:9px 14px;border-radius:var(--r-full);border:1.5px solid var(--clr-border);background:white;font-size:12px;font-weight:600;color:var(--clr-muted);cursor:pointer;transition:all .2s}
+    .spec-chip.on{border-color:var(--clr-teal);background:rgba(45,125,110,0.08);color:var(--clr-teal)}
+
+    /* File upload */
+    .upload-box{width:100%;border:2px dashed var(--clr-border);border-radius:var(--r-lg);padding:22px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;transition:border-color .2s,background .2s;background:white;margin-bottom:14px}
+    .upload-box:hover{border-color:var(--clr-teal);background:rgba(45,125,110,0.03)}
+    .upload-icon{width:44px;height:44px;border-radius:var(--r-full);background:rgba(45,125,110,0.1);display:flex;align-items:center;justify-content:center;color:var(--clr-teal)}
+    .upload-title{font-size:13px;font-weight:600;color:var(--clr-text)}
+    .upload-sub{font-size:11px;color:var(--clr-faint);text-align:center}
+
+    /* Profile photo picker */
+    .photo-picker{display:flex;align-items:center;gap:16px;background:white;border-radius:var(--r-lg);padding:16px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+    .pp-circle{width:72px;height:72px;border-radius:var(--r-full);background:var(--clr-cream-dk);display:flex;align-items:center;justify-content:center;font-size:32px;flex-shrink:0;cursor:pointer;overflow:hidden;position:relative;border:3px solid var(--clr-border);transition:border-color .2s}
+    .pp-circle:hover{border-color:var(--clr-teal)}
+    .pp-change{position:absolute;inset:0;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;color:white;opacity:0;transition:opacity .2s}
+    .pp-circle:hover .pp-change{opacity:1}
+    .pp-info{flex:1}
+    .pp-title{font-size:14px;font-weight:700;color:var(--clr-text)}
+    .pp-sub{font-size:12px;color:var(--clr-muted);margin-top:3px;line-height:1.5}
+    .pp-btn{height:34px;padding:0 14px;border-radius:var(--r-full);border:1.5px solid var(--clr-teal);color:var(--clr-teal);font-size:12px;font-weight:600;transition:all .2s;margin-top:6px;display:inline-flex;align-items:center;gap:5px}
+    .pp-btn:hover{background:rgba(45,125,110,0.08)}
+
+    /* Step 3 — schedule */
+    .day-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+    .day-chip{width:42px;height:42px;border-radius:var(--r-full);border:1.5px solid var(--clr-border);background:white;font-size:11px;font-weight:700;color:var(--clr-muted);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s}
+    .day-chip.on{background:var(--clr-forest);border-color:var(--clr-forest);color:white}
+    .hours-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+
+    /* Rate input highlight */
+    .rate-preview{background:linear-gradient(135deg,var(--clr-forest),#24503e);border-radius:var(--r-lg);padding:16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+    .rp-left{color:rgba(255,255,255,0.6);font-size:13px}
+    .rp-val{font-family:var(--font-display);font-size:30px;font-weight:600;color:var(--clr-gold)}
+    .rp-unit{font-size:12px;color:var(--clr-gold-lt)}
+    .rp-earn{font-size:11px;color:var(--clr-faint);margin-top:4px}
+
+    /* Step 4 — review */
+    .review-card{background:white;border-radius:var(--r-lg);overflow:hidden;box-shadow:0 3px 12px rgba(0,0,0,0.07);margin-bottom:12px}
+    .rc-header{background:var(--clr-forest);padding:14px 16px;display:flex;align-items:center;gap:10px}
+    .rc-icon{width:34px;height:34px;border-radius:var(--r-full);background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;color:var(--clr-gold)}
+    .rc-title{font-size:14px;font-weight:700;color:white}
+    .rc-body{padding:14px 16px}
+    .rc-row{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid var(--clr-cream-dk)}
+    .rc-row:last-child{border-bottom:none}
+    .rc-lbl{font-size:12px;color:var(--clr-muted);flex-shrink:0}
+    .rc-val{font-size:12px;font-weight:600;color:var(--clr-text);text-align:right}
+    .terms-box{background:rgba(45,125,110,0.06);border:1.5px solid rgba(45,125,110,0.2);border-radius:var(--r-md);padding:14px;display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;cursor:pointer}
+    .terms-check{width:20px;height:20px;border-radius:5px;border:2px solid var(--clr-border);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:all .2s}
+    .terms-check.on{background:var(--clr-teal);border-color:var(--clr-teal)}
+    .terms-text{font-size:12px;color:var(--clr-muted);line-height:1.6}
+    .terms-text a{color:var(--clr-teal);font-weight:600;text-decoration:none}
+
+    /* ── FOOTER NAV ────────────── */
+    .footer{flex-shrink:0;padding:12px 20px 20px;background:white;border-top:1px solid var(--clr-border);display:flex;gap:10px;align-items:center}
+    .btn-back{height:52px;width:52px;border-radius:var(--r-full);border:2px solid var(--clr-border);display:flex;align-items:center;justify-content:center;color:var(--clr-muted);flex-shrink:0;transition:all .2s}
+    .btn-back:hover{border-color:var(--clr-teal);color:var(--clr-teal)}
+    .btn-next{flex:1;height:52px;border-radius:var(--r-full);background:var(--clr-forest);color:var(--clr-cream);font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .15s,background .2s;box-shadow:0 6px 20px rgba(26,58,46,0.28)}
+    .btn-next:active{transform:scale(0.97)}
+    .btn-next.gold{background:linear-gradient(135deg,var(--clr-gold),var(--clr-gold-lt));color:var(--clr-forest);box-shadow:0 6px 20px rgba(201,168,76,0.3)}
+
+    /* ── SUCCESS SCREEN ─────────── */
+    #success-screen{display:none;flex:1;flex-direction:column;align-items:center;justify-content:center;padding:32px;text-align:center;background:var(--clr-bg)}
+    #success-screen.show{display:flex}
+    .success-ring{width:100px;height:100px;border-radius:var(--r-full);background:linear-gradient(135deg,var(--clr-teal),var(--clr-teal-lt));display:flex;align-items:center;justify-content:center;margin-bottom:24px;box-shadow:0 0 0 18px rgba(45,125,110,0.1),0 10px 30px rgba(45,125,110,0.28);animation:popscale .55s var(--ease-spring)}
+    @keyframes popscale{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+    .success-emoji{font-size:48px;animation:popscale .6s var(--ease-spring) .1s both}
+    .success-title{font-family:var(--font-display);font-size:34px;font-weight:600;color:var(--clr-text);margin-bottom:10px}
+    .success-sub{font-size:14px;color:var(--clr-muted);line-height:1.7;margin-bottom:28px}
+    .next-steps{width:100%;background:white;border-radius:var(--r-xl);padding:18px 20px;box-shadow:0 4px 16px rgba(0,0,0,0.07);margin-bottom:24px;text-align:left}
+    .ns-title{font-size:13px;font-weight:700;color:var(--clr-text);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+    .ns-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--clr-cream-dk)}
+    .ns-item:last-child{border-bottom:none}
+    .ns-num{width:22px;height:22px;border-radius:var(--r-full);background:var(--clr-teal);color:white;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+    .ns-text{font-size:13px;color:var(--clr-muted);line-height:1.5}
+    .btn-home{height:54px;width:100%;border-radius:var(--r-full);background:var(--clr-forest);color:var(--clr-cream);font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 6px 20px rgba(26,58,46,0.28);cursor:pointer;transition:transform .15s}
+    .btn-home:active{transform:scale(0.97)}
+
+    .spacer{height:8px}
+    .phone-label{margin-top:14px;font-size:11px;color:rgba(255,255,255,0.28);font-family:var(--font-body);letter-spacing:1.2px;text-align:center}
+  </style>
+</head>
+<body>
+
+<div class="phone">
+
+  <!-- STATUS BAR -->
+  <div class="status-bar">
+    <span class="time" id="clock">9:41</span>
+    <div class="status-icons">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="currentColor"><rect x="0" y="5" width="3" height="7" rx="1" opacity=".4"/><rect x="4.5" y="3" width="3" height="9" rx="1" opacity=".6"/><rect x="9" y="1" width="3" height="11" rx="1" opacity=".8"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 4C3.8 1.5 8.2 1.5 11 4" stroke-linecap="round"/><path d="M3 6.5C4.8 4.8 7.2 4.8 9 6.5" stroke-linecap="round"/><circle cx="6" cy="9.5" r="1.3" fill="currentColor" stroke="none"/></svg>
+      <svg width="26" height="13" viewBox="0 0 26 13" fill="currentColor"><rect x="0" y="1" width="22" height="11" rx="2.5" stroke="currentColor" fill="none" stroke-width="1.2"/><rect x="1.5" y="2.5" width="16" height="8" rx="1.5"/><path d="M23 5v3c.9-.4 1.6-1 1.6-1.5S23.9 5.4 23 5z"/></svg>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-row">
+      <button class="back-btn" onclick="window.location.href='./03-home.html'">
+        <i data-lucide="arrow-left" style="width:18px;height:18px"></i>
+      </button>
+      <div class="hero-title">Join as a Trainer</div>
+    </div>
+    <div class="earn-pill">
+      <i data-lucide="trending-up" style="width:13px;height:13px"></i>
+      Earn Rs 800 – 3,000/hr · Set your own schedule
+    </div>
+  </div>
+
+  <!-- STEP PROGRESS -->
+  <div class="step-progress">
+    <div class="sp-track">
+      <div class="sp-fill" id="sp-fill" style="width:12.5%"></div>
+    </div>
+    <div class="sp-dots">
+      <div class="sp-dot active" id="dot-0" onclick="jumpStep(0)">
+        <div class="spd-circle" id="dc-0">1</div>
+        <span class="spd-lbl">You</span>
+      </div>
+      <div class="sp-dot" id="dot-1" onclick="jumpStep(1)">
+        <div class="spd-circle" id="dc-1">2</div>
+        <span class="spd-lbl">Skills</span>
+      </div>
+      <div class="sp-dot" id="dot-2" onclick="jumpStep(2)">
+        <div class="spd-circle" id="dc-2">3</div>
+        <span class="spd-lbl">Schedule</span>
+      </div>
+      <div class="sp-dot" id="dot-3" onclick="jumpStep(3)">
+        <div class="spd-circle" id="dc-3">4</div>
+        <span class="spd-lbl">Review</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCROLL BODY -->
+  <div class="scroll-body" id="scroll-body">
+
+    <!-- ░ STEP 1 — Personal Info ░ -->
+    <div class="step-panel show" id="step-0">
+      <div class="step-heading">Tell us about yourself</div>
+      <div class="step-sub">This is your public trainer profile. Make it shine.</div>
+
+      <!-- Profile photo -->
+      <div class="photo-picker">
+        <div class="pp-circle" onclick="pickPhoto()">
+          🧘
+          <div class="pp-change"><i data-lucide="camera" style="width:18px;height:18px"></i></div>
+        </div>
+        <div class="pp-info">
+          <div class="pp-title">Profile Photo</div>
+          <div class="pp-sub">A clear photo helps clients trust you. Recommended: 400×400px</div>
+          <button class="pp-btn" onclick="pickPhoto()">
+            <i data-lucide="upload" style="width:12px;height:12px"></i> Upload
+          </button>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">Full Name</label>
+        <div class="input-wrap">
+          <i data-lucide="user" class="input-icon" style="width:18px;height:18px"></i>
+          <input class="input-field" type="text" placeholder="Your full name" id="f-name">
+        </div>
+      </div>
+
+      <div class="row-2">
+        <div class="input-group">
+          <label class="input-label">Email</label>
+          <div class="input-wrap">
+            <i data-lucide="mail" class="input-icon" style="width:18px;height:18px"></i>
+            <input class="input-field" type="email" placeholder="Email" id="f-email">
+          </div>
+        </div>
+        <div class="input-group">
+          <label class="input-label">Phone</label>
+          <div class="input-wrap">
+            <i data-lucide="phone" class="input-icon" style="width:18px;height:18px"></i>
+            <input class="input-field" type="tel" placeholder="+977…" id="f-phone">
+          </div>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">City / Location</label>
+        <div class="input-wrap">
+          <i data-lucide="map-pin" class="input-icon" style="width:18px;height:18px"></i>
+          <select class="input-field">
+            <option>Kathmandu</option><option>Lalitpur</option><option>Bhaktapur</option>
+            <option>Pokhara</option><option>Chitwan</option><option>Dharan</option><option>Other</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">Short Bio</label>
+        <div class="input-wrap">
+          <i data-lucide="file-text" class="input-icon" style="width:18px;height:18px;top:16px;transform:none"></i>
+          <textarea class="input-field" placeholder="Briefly describe yourself and your teaching style…" id="f-bio"></textarea>
+        </div>
+      </div>
+      <div class="spacer"></div>
+    </div><!-- /step-0 -->
+
+    <!-- ░ STEP 2 — Skills & Pricing ░ -->
+    <div class="step-panel" id="step-1">
+      <div class="step-heading">Your specialties</div>
+      <div class="step-sub">Pick all services you offer. You can update these later.</div>
+
+      <div class="chip-label">Choose your specialties</div>
+      <div class="chip-grid">
+        <div class="spec-chip on" onclick="this.classList.toggle('on')">
+          <i data-lucide="person-standing" style="width:13px;height:13px"></i> Yoga
+        </div>
+        <div class="spec-chip" onclick="this.classList.toggle('on')">
+          <i data-lucide="music-2" style="width:13px;height:13px"></i> Singing Bowl
+        </div>
+        <div class="spec-chip" onclick="this.classList.toggle('on')">
+          <i data-lucide="sparkles" style="width:13px;height:13px"></i> Reiki
+        </div>
+        <div class="spec-chip" onclick="this.classList.toggle('on')">
+          <i data-lucide="wind" style="width:13px;height:13px"></i> Meditation
+        </div>
+        <div class="spec-chip" onclick="this.classList.toggle('on')">
+          <i data-lucide="heart-pulse" style="width:13px;height:13px"></i> Healing
+        </div>
+        <div class="spec-chip" onclick="this.classList.toggle('on')">
+          <i data-lucide="leaf" style="width:13px;height:13px"></i> Pranayama
+        </div>
+        <div class="spec-chip" onclick="this.classList.toggle('on')">
+          <i data-lucide="headphones" style="width:13px;height:13px"></i> Sound Therapy
+        </div>
+        <div class="spec-chip" onclick="this.classList.toggle('on')">
+          <i data-lucide="sun" style="width:13px;height:13px"></i> Breathwork
+        </div>
+      </div>
+
+      <div class="row-2">
+        <div class="input-group">
+          <label class="input-label">Experience</label>
+          <div class="input-wrap">
+            <i data-lucide="clock" class="input-icon" style="width:18px;height:18px"></i>
+            <select class="input-field">
+              <option>< 1 year</option><option>1–2 years</option><option selected>3–5 years</option>
+              <option>5–10 years</option><option>10+ years</option>
+            </select>
+          </div>
+        </div>
+        <div class="input-group">
+          <label class="input-label">Session Type</label>
+          <div class="input-wrap">
+            <i data-lucide="video" class="input-icon" style="width:18px;height:18px"></i>
+            <select class="input-field">
+              <option>Both</option><option>Online only</option><option>In-person only</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rate preview -->
+      <div class="rate-preview">
+        <div>
+          <div class="rp-left">Your hourly rate</div>
+          <div class="rp-val" id="rate-display">Rs 1,200</div>
+          <div class="rp-unit">per hour</div>
+          <div class="rp-earn">Est. Rs 24,000/month · 20 sessions</div>
+        </div>
+        <i data-lucide="trending-up" style="width:36px;height:36px;color:rgba(201,168,76,0.4)"></i>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">Set Your Hourly Rate (NPR)</label>
+        <div class="input-wrap">
+          <i data-lucide="banknote" class="input-icon" style="width:18px;height:18px"></i>
+          <input class="input-field" type="number" placeholder="e.g. 1200" id="f-rate" min="200" max="10000" oninput="updateRate(this.value)">
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">Certifications (optional)</label>
+        <div class="input-wrap">
+          <i data-lucide="award" class="input-icon" style="width:18px;height:18px"></i>
+          <input class="input-field" type="text" placeholder="e.g. Yoga Alliance RYT 200">
+        </div>
+      </div>
+
+      <!-- Certificate upload -->
+      <div class="upload-box" onclick="pickFile()">
+        <div class="upload-icon"><i data-lucide="file-plus" style="width:22px;height:22px"></i></div>
+        <div class="upload-title">Upload Certificate / ID</div>
+        <div class="upload-sub">PDF or JPG · Max 5MB · Helps with verification</div>
+      </div>
+      <div class="spacer"></div>
+    </div><!-- /step-1 -->
+
+    <!-- ░ STEP 3 — Schedule ░ -->
+    <div class="step-panel" id="step-2">
+      <div class="step-heading">Set your schedule</div>
+      <div class="step-sub">Clients will only see available slots based on this.</div>
+
+      <div class="chip-label">Available Days</div>
+      <div class="day-row">
+        <div class="day-chip on" onclick="this.classList.toggle('on')">Mon</div>
+        <div class="day-chip on" onclick="this.classList.toggle('on')">Tue</div>
+        <div class="day-chip on" onclick="this.classList.toggle('on')">Wed</div>
+        <div class="day-chip on" onclick="this.classList.toggle('on')">Thu</div>
+        <div class="day-chip on" onclick="this.classList.toggle('on')">Fri</div>
+        <div class="day-chip" onclick="this.classList.toggle('on')">Sat</div>
+        <div class="day-chip" onclick="this.classList.toggle('on')">Sun</div>
+      </div>
+
+      <div class="chip-label">Working Hours</div>
+      <div class="hours-row">
+        <div class="input-group" style="margin-bottom:0">
+          <label class="input-label">From</label>
+          <div class="input-wrap">
+            <i data-lucide="sunrise" class="input-icon" style="width:17px;height:17px"></i>
+            <select class="input-field">
+              <option>6:00 AM</option><option selected>7:00 AM</option><option>8:00 AM</option>
+              <option>9:00 AM</option><option>10:00 AM</option>
+            </select>
+          </div>
+        </div>
+        <div class="input-group" style="margin-bottom:0">
+          <label class="input-label">To</label>
+          <div class="input-wrap">
+            <i data-lucide="sunset" class="input-icon" style="width:17px;height:17px"></i>
+            <select class="input-field">
+              <option>4:00 PM</option><option>5:00 PM</option><option selected>6:00 PM</option>
+              <option>7:00 PM</option><option>8:00 PM</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-group" style="margin-top:14px">
+        <label class="input-label">Session Duration</label>
+        <div class="input-wrap">
+          <i data-lucide="timer" class="input-icon" style="width:18px;height:18px"></i>
+          <select class="input-field">
+            <option>30 minutes (trial)</option><option selected>1 hour</option>
+            <option>1.5 hours</option><option>2 hours</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">Buffer Between Sessions</label>
+        <div class="input-wrap">
+          <i data-lucide="pause-circle" class="input-icon" style="width:18px;height:18px"></i>
+          <select class="input-field">
+            <option>No buffer</option><option selected>15 minutes</option>
+            <option>30 minutes</option><option>1 hour</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">Booking Notice Required</label>
+        <div class="input-wrap">
+          <i data-lucide="calendar-clock" class="input-icon" style="width:18px;height:18px"></i>
+          <select class="input-field">
+            <option selected>At least 1 hour before</option><option>Same day OK</option>
+            <option>1 day before</option><option>2 days before</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Online platform -->
+      <div class="input-group">
+        <label class="input-label">Online Platform (for online sessions)</label>
+        <div class="input-wrap">
+          <i data-lucide="video" class="input-icon" style="width:18px;height:18px"></i>
+          <select class="input-field">
+            <option>Google Meet</option><option>Zoom</option><option>WhatsApp Video</option><option>Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="spacer"></div>
+    </div><!-- /step-2 -->
+
+    <!-- ░ STEP 4 — Review & Submit ░ -->
+    <div class="step-panel" id="step-3">
+      <div class="step-heading">Review your profile</div>
+      <div class="step-sub">Everything look good? Submit to go live on Jivan.</div>
+
+      <div class="review-card">
+        <div class="rc-header">
+          <div class="rc-icon"><i data-lucide="user" style="width:18px;height:18px"></i></div>
+          <div class="rc-title">Personal Info</div>
+        </div>
+        <div class="rc-body">
+          <div class="rc-row"><span class="rc-lbl">Name</span><span class="rc-val" id="rv-name">—</span></div>
+          <div class="rc-row"><span class="rc-lbl">Email</span><span class="rc-val" id="rv-email">—</span></div>
+          <div class="rc-row"><span class="rc-lbl">Location</span><span class="rc-val">Kathmandu</span></div>
+        </div>
+      </div>
+
+      <div class="review-card">
+        <div class="rc-header">
+          <div class="rc-icon"><i data-lucide="briefcase" style="width:18px;height:18px"></i></div>
+          <div class="rc-title">Skills & Pricing</div>
+        </div>
+        <div class="rc-body">
+          <div class="rc-row"><span class="rc-lbl">Specialties</span><span class="rc-val">Yoga, Pranayama</span></div>
+          <div class="rc-row"><span class="rc-lbl">Experience</span><span class="rc-val">3–5 years</span></div>
+          <div class="rc-row"><span class="rc-lbl">Hourly Rate</span><span class="rc-val" id="rv-rate">Rs 1,200</span></div>
+          <div class="rc-row"><span class="rc-lbl">Session Type</span><span class="rc-val">Online + In-Person</span></div>
+        </div>
+      </div>
+
+      <div class="review-card">
+        <div class="rc-header">
+          <div class="rc-icon"><i data-lucide="calendar" style="width:18px;height:18px"></i></div>
+          <div class="rc-title">Schedule</div>
+        </div>
+        <div class="rc-body">
+          <div class="rc-row"><span class="rc-lbl">Days</span><span class="rc-val">Mon – Fri</span></div>
+          <div class="rc-row"><span class="rc-lbl">Hours</span><span class="rc-val">7:00 AM – 6:00 PM</span></div>
+          <div class="rc-row"><span class="rc-lbl">Duration</span><span class="rc-val">1 hour sessions</span></div>
+          <div class="rc-row"><span class="rc-lbl">Platform</span><span class="rc-val">Google Meet</span></div>
+        </div>
+      </div>
+
+      <!-- Terms -->
+      <div class="terms-box" onclick="toggleTerms()">
+        <div class="terms-check" id="terms-check"></div>
+        <div class="terms-text">
+          I agree to Jivan's <a href="#">Trainer Terms of Service</a>, <a href="#">Privacy Policy</a>, and confirm all information provided is accurate. I understand Jivan takes a 15% commission per booking.
+        </div>
+      </div>
+      <div class="spacer"></div>
+    </div><!-- /step-3 -->
+
+    <!-- SUCCESS -->
+    <div id="success-screen">
+      <div class="success-ring">
+        <span class="success-emoji">🎉</span>
+      </div>
+      <div class="success-title">Application Sent!</div>
+      <div class="success-sub">Your trainer profile is under review.<br>We typically respond within 24–48 hours.</div>
+      <div class="next-steps">
+        <div class="ns-title"><i data-lucide="list-checks" style="width:15px;height:15px;color:var(--clr-teal)"></i> What happens next?</div>
+        <div class="ns-item">
+          <div class="ns-num">1</div>
+          <div class="ns-text">Our team reviews your profile and certificate documents</div>
+        </div>
+        <div class="ns-item">
+          <div class="ns-num">2</div>
+          <div class="ns-text">You receive a Verified badge once approved</div>
+        </div>
+        <div class="ns-item">
+          <div class="ns-num">3</div>
+          <div class="ns-text">Your profile goes live and clients can book you</div>
+        </div>
+        <div class="ns-item">
+          <div class="ns-num">4</div>
+          <div class="ns-text">Earnings are paid weekly via eSewa or bank transfer</div>
+        </div>
+      </div>
+      <button class="btn-home" onclick="window.location.href='./03-home.html'">
+        <i data-lucide="home" style="width:18px;height:18px"></i> Go to Home
+      </button>
+    </div>
+
+  </div><!-- /scroll-body -->
+
+  <!-- FOOTER NAV (hidden on success) -->
+  <div class="footer" id="footer-nav">
+    <button class="btn-back" id="btn-back" onclick="prevStep()" style="display:none">
+      <i data-lucide="arrow-left" style="width:20px;height:20px"></i>
+    </button>
+    <button class="btn-next" id="btn-next" onclick="nextStep()">
+      <span id="btn-next-lbl">Next</span>
+      <i data-lucide="arrow-right" style="width:18px;height:18px"></i>
+    </button>
+  </div>
+
+</div><!-- /phone -->
+<div class="phone-label">PAGE 6 OF 6 &nbsp;·&nbsp; 06-freelancer-register.html</div>
+
+<script>
+  lucide.createIcons();
+  function tick(){const n=new Date();document.getElementById('clock').textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')}
+  tick(); setInterval(tick,1000);
+
+  // Step logic
+  let step=0; const TOTAL=4;
+  const fills=['12.5%','37.5%','62.5%','87.5%','100%'];
+
+  function updateStepUI(){
+    // Fill bar
+    document.getElementById('sp-fill').style.width=fills[step];
+    // Dot states
+    for(let i=0;i<TOTAL;i++){
+      const dot=document.getElementById('dot-'+i);
+      const dc=document.getElementById('dc-'+i);
+      dot.classList.remove('active','done');
+      if(i<step){dot.classList.add('done');dc.innerHTML='<i data-lucide="check" style="width:12px;height:12px;color:white"></i>';}
+      else if(i===step){dot.classList.add('active');dc.textContent=i+1;}
+      else{dc.textContent=i+1;}
+    }
+    // Panels
+    document.querySelectorAll('.step-panel').forEach((p,i)=>p.classList.toggle('show',i===step));
+    // Back btn
+    document.getElementById('btn-back').style.display=step>0?'flex':'none';
+    // Next btn label
+    const lbl=document.getElementById('btn-next-lbl');
+    const btn=document.getElementById('btn-next');
+    if(step===TOTAL-1){lbl.textContent='Submit Application';btn.classList.add('gold');}
+    else{lbl.textContent='Next';btn.classList.remove('gold');}
+    lucide.createIcons();
+    document.getElementById('scroll-body').scrollTop=0;
+  }
+
+  function nextStep(){
+    // Populate review on step 3
+    if(step===TOTAL-1){submitApp();return;}
+    step=Math.min(step+1,TOTAL-1);
+    if(step===TOTAL-1) populateReview();
+    updateStepUI();
+  }
+  function prevStep(){step=Math.max(step-1,0);updateStepUI();}
+  function jumpStep(i){if(i<=step)step=i;updateStepUI();}
+
+  function populateReview(){
+    const name=document.getElementById('f-name').value||'Not entered';
+    const email=document.getElementById('f-email').value||'Not entered';
+    const rate=document.getElementById('f-rate').value?'Rs '+parseInt(document.getElementById('f-rate').value).toLocaleString():'Rs 1,200';
+    document.getElementById('rv-name').textContent=name;
+    document.getElementById('rv-email').textContent=email;
+    document.getElementById('rv-rate').textContent=rate;
+  }
+
+  // Rate live preview
+  function updateRate(v){
+    const n=parseInt(v)||0;
+    document.getElementById('rate-display').textContent=n?'Rs '+n.toLocaleString():'Rs —';
+  }
+
+  // Terms
+  let termsChecked=false;
+  function toggleTerms(){
+    termsChecked=!termsChecked;
+    const tc=document.getElementById('terms-check');
+    tc.classList.toggle('on',termsChecked);
+    tc.innerHTML=termsChecked?'<i data-lucide="check" style="width:12px;height:12px;color:white"></i>':'';
+    lucide.createIcons();
+  }
+
+  // Submit
+  function submitApp(){
+    document.getElementById('footer-nav').style.display='none';
+    document.getElementById('sp-fill').style.width='100%';
+    document.querySelectorAll('.step-panel').forEach(p=>p.classList.remove('show'));
+    const ss=document.getElementById('success-screen');
+    ss.classList.add('show');
+    lucide.createIcons();
+  }
+
+  // Photo / file pickers (mock)
+  function pickPhoto(){
+    const photos=['🧘','🌿','✨','🔔','🧠','🌸','💫'];
+    const pick=photos[Math.floor(Math.random()*photos.length)];
+    document.querySelector('.pp-circle').textContent=pick;
+    const ch=document.createElement('div');ch.className='pp-change';
+    ch.innerHTML='<i data-lucide="camera" style="width:18px;height:18px"></i>';
+    document.querySelector('.pp-circle').appendChild(ch);
+    lucide.createIcons();
+  }
+  function pickFile(){ alert('File picker would open here in production.'); }
+</script>
+</body>
+</html>

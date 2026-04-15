@@ -85,7 +85,7 @@ const t = {
     eventDetailsTitle: "📅 Event Details",
     dateLabel: "Date", dateVal: "28th April – 1st May, 2026", dateSub: "15th–18th Baishakh, 2083 B.S.",
     locationLabel: "Location", locationVal: "Lodge Thasang Village", locationSub: "Mustang, Nepal",
-    durationLabel: "Duration", durationVal: "4 Days / 3 Nights",
+    durationLabel: "Duration", durationVal: "3 Days / 4 Nights",
     feeLabel: "Registration Fee", feeVal: "Rs. 28,000", feeSub: "Per person · Includes accommodation & meals",
     transportLabel: "Transportation", transportVal: "Not included — manage independently",
     deadlineLabel: "Booking Deadline", deadlineVal: "April 15th, 2026", deadlineSub: "Last day for registrations",

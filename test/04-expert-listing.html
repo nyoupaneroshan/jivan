@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+  <title>Jivan — Expert Listing</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <style>
+    :root {
+      --font-display:'Cormorant Garamond',Georgia,serif;
+      --font-body:'Plus Jakarta Sans',system-ui,sans-serif;
+      --clr-forest:#1a3a2e; --clr-teal:#2d7d6e; --clr-teal-lt:#3d9e8c;
+      --clr-gold:#c9a84c;   --clr-gold-lt:#e6c97a;
+      --clr-cream:#f5f0e8;  --clr-cream-dk:#ede6d8;
+      --clr-bg:#f4f0ea;     --clr-white:#ffffff;
+      --clr-text:#1e2d24;   --clr-muted:#5a7266;  --clr-faint:#9ab5ac;
+      --clr-border:#ddd8cf;
+      --r-sm:6px; --r-md:12px; --r-lg:18px; --r-xl:24px; --r-full:9999px;
+      --ease-out:cubic-bezier(0.16,1,0.3,1);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{-webkit-font-smoothing:antialiased}
+    body{font-family:var(--font-body);background:#0d1f17;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100dvh;padding:16px}
+    button{cursor:pointer;border:none;background:none;font:inherit}
+
+    /* PHONE */
+    .phone{width:390px;height:844px;border-radius:48px;overflow:hidden;position:relative;box-shadow:0 40px 100px rgba(0,0,0,0.65),0 0 0 1px rgba(255,255,255,0.07);background:var(--clr-bg);display:flex;flex-direction:column}
+
+    /* STATUS BAR */
+    .status-bar{flex-shrink:0;height:52px;display:flex;align-items:center;justify-content:space-between;padding:14px 28px 0;background:var(--clr-forest)}
+    .status-bar .time{font-size:15px;font-weight:600;color:#fff;letter-spacing:-0.3px}
+    .status-icons{display:flex;gap:4px;align-items:center;color:#fff}
+
+    /* STICKY TOP */
+    .sticky-top{flex-shrink:0;background:var(--clr-forest)}
+
+    /* PAGE HEADER */
+    .page-header{display:flex;align-items:center;gap:12px;padding:14px 20px 16px;position:relative}
+    .back-btn{width:38px;height:38px;border-radius:var(--r-full);background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;color:var(--clr-cream);flex-shrink:0;transition:background .2s}
+    .back-btn:hover{background:rgba(255,255,255,0.18)}
+    .ph-center{flex:1}
+    .ph-title{font-family:var(--font-display);font-size:22px;font-weight:600;color:var(--clr-cream);letter-spacing:-0.3px;line-height:1.1}
+    .ph-sub{font-size:12px;color:var(--clr-faint);margin-top:2px}
+    .map-toggle{display:flex;background:rgba(255,255,255,0.1);border-radius:var(--r-full);padding:3px;gap:2px}
+    .mt-btn{width:34px;height:30px;border-radius:var(--r-full);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.5);transition:background .2s,color .2s;cursor:pointer}
+    .mt-btn.on{background:rgba(255,255,255,0.18);color:white}
+
+    /* FILTER CHIPS ROW */
+    .filter-row{display:flex;gap:8px;padding:0 20px 16px;overflow-x:auto;scrollbar-width:none}
+    .filter-row::-webkit-scrollbar{display:none}
+    .fchip{flex-shrink:0;height:34px;padding:0 14px;border-radius:var(--r-full);border:1.5px solid rgba(255,255,255,0.18);font-size:12px;font-weight:600;color:rgba(255,255,255,0.65);display:flex;align-items:center;gap:6px;cursor:pointer;transition:all .2s;background:transparent;white-space:nowrap}
+    .fchip.on{background:var(--clr-gold);border-color:var(--clr-gold);color:var(--clr-forest)}
+    .fchip:hover{border-color:rgba(255,255,255,0.4);color:white}
+
+    /* SORT + COUNT BAR */
+    .sort-bar{display:flex;align-items:center;justify-content:space-between;padding:14px 20px 10px;background:var(--clr-bg);flex-shrink:0}
+    .result-count{font-size:13px;font-weight:700;color:var(--clr-text)}
+    .result-count span{color:var(--clr-muted);font-weight:400}
+    .sort-btn{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--clr-teal);cursor:pointer}
+
+    /* SCROLL AREA */
+    .scroll-body{flex:1;overflow-y:auto;overflow-x:hidden;padding:0 16px}
+    .scroll-body::-webkit-scrollbar{display:none}
+
+    /* EXPERT CARD — FULL WIDTH */
+    .xcard{background:var(--clr-white);border-radius:var(--r-xl);margin-bottom:12px;overflow:hidden;cursor:pointer;transition:transform .2s var(--ease-out),box-shadow .2s;box-shadow:0 3px 12px rgba(0,0,0,0.07)}
+    .xcard:active{transform:scale(0.985);box-shadow:0 1px 6px rgba(0,0,0,0.07)}
+
+    /* Card top strip */
+    .xc-top{display:flex;align-items:flex-start;gap:14px;padding:16px 16px 12px}
+    .xc-avatar{width:66px;height:66px;border-radius:var(--r-lg);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:30px;position:relative}
+    .avail-ring{position:absolute;bottom:-3px;right:-3px;width:16px;height:16px;border-radius:var(--r-full);background:#22c55e;border:3px solid white}
+    .avail-ring.busy{background:#f59e0b}
+    .avail-ring.offline{background:#94a3b8}
+    .xc-info{flex:1;min-width:0}
+    .xc-name-row{display:flex;align-items:center;gap:7px}
+    .xc-name{font-size:16px;font-weight:700;color:var(--clr-text)}
+    .xc-verified{width:17px;height:17px;background:var(--clr-teal);border-radius:var(--r-full);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .xc-spec{font-size:12px;color:var(--clr-muted);margin-top:3px}
+    .xc-loc{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--clr-faint);margin-top:4px}
+    .xc-tags{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap}
+    .xtag{font-size:10px;font-weight:500;padding:3px 9px;border-radius:var(--r-full);background:var(--clr-cream-dk);color:var(--clr-muted)}
+    .xtag.avail-now{background:rgba(34,197,94,0.1);color:#16a34a}
+    .xtag.online{background:rgba(45,125,110,0.1);color:var(--clr-teal)}
+    .xc-price{text-align:right;flex-shrink:0}
+    .xc-rate{font-size:18px;font-weight:800;color:var(--clr-forest);line-height:1.1}
+    .xc-unit{font-size:10px;color:var(--clr-muted);font-weight:400}
+    .xc-stars{display:flex;align-items:center;gap:3px;margin-top:5px;justify-content:flex-end}
+    .xc-stars-val{font-size:12px;color:var(--clr-gold);font-weight:700}
+    .xc-stars-cnt{font-size:10px;color:var(--clr-faint)}
+
+    /* Card divider */
+    .xc-divider{height:1px;background:var(--clr-cream-dk);margin:0 16px}
+
+    /* Card bottom */
+    .xc-bottom{display:flex;align-items:center;justify-content:space-between;padding:11px 16px}
+    .xc-sessions{font-size:12px;color:var(--clr-muted);display:flex;align-items:center;gap:5px}
+    .xc-actions{display:flex;gap:8px}
+    .xc-fav{width:34px;height:34px;border-radius:var(--r-full);border:1.5px solid var(--clr-border);display:flex;align-items:center;justify-content:center;color:var(--clr-faint);transition:all .2s}
+    .xc-fav.liked{border-color:#f43f5e;color:#f43f5e;background:rgba(244,63,94,0.06)}
+    .xc-book{height:34px;padding:0 20px;background:var(--clr-forest);color:var(--clr-cream);border-radius:var(--r-full);font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;transition:background .2s}
+    .xc-book:hover{background:#24503e}
+
+    /* MAP VIEW */
+    #map-view{display:none;flex:1;position:relative}
+    .map-mock{width:100%;height:100%;background:linear-gradient(160deg,#d4ede7 0%,#c8e6c0 40%,#d1e8b8 70%,#deeec0 100%);position:relative;overflow:hidden}
+    .map-road-h{position:absolute;left:0;right:0;height:8px;background:rgba(255,255,255,0.7);top:40%}
+    .map-road-h2{position:absolute;left:0;right:0;height:5px;background:rgba(255,255,255,0.5);top:65%}
+    .map-road-v{position:absolute;top:0;bottom:0;width:6px;background:rgba(255,255,255,0.6);left:45%}
+    .map-road-v2{position:absolute;top:0;bottom:0;width:4px;background:rgba(255,255,255,0.4);left:72%}
+    .map-pin{position:absolute;display:flex;flex-direction:column;align-items:center;cursor:pointer;transition:transform .2s}
+    .map-pin:hover{transform:scale(1.1)}
+    .pin-bubble{background:var(--clr-forest);color:var(--clr-gold);font-size:11px;font-weight:700;padding:5px 10px;border-radius:var(--r-full);white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,0.25)}
+    .pin-bubble.active{background:var(--clr-gold);color:var(--clr-forest)}
+    .pin-tail{width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid var(--clr-forest);margin-top:-1px}
+    .pin-tail.active{border-top-color:var(--clr-gold)}
+    .map-user{position:absolute;width:16px;height:16px;border-radius:var(--r-full);background:#2563eb;border:3px solid white;box-shadow:0 2px 8px rgba(37,99,235,0.4);top:55%;left:50%}
+    .map-card-preview{position:absolute;bottom:0;left:0;right:0;background:white;border-radius:var(--r-xl) var(--r-xl) 0 0;padding:16px;box-shadow:0 -8px 24px rgba(0,0,0,0.12)}
+    .mcp-row{display:flex;align-items:center;gap:12px}
+    .mcp-av{width:50px;height:50px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:24px;background:linear-gradient(135deg,#d4ede7,#b5dbd2)}
+    .mcp-info{flex:1}.mcp-name{font-size:15px;font-weight:700;color:var(--clr-text)}.mcp-spec{font-size:12px;color:var(--clr-muted);margin-top:2px}
+    .mcp-right{text-align:right}.mcp-rate{font-size:16px;font-weight:800;color:var(--clr-forest)}.mcp-unit{font-size:10px;color:var(--clr-muted)}
+
+    /* EMPTY / LOADING */
+    .spacer{height:16px}
+
+    /* BOTTOM NAV */
+    .bottom-nav{flex-shrink:0;height:80px;background:white;display:flex;align-items:flex-start;padding:10px 0 0;border-top:1px solid var(--clr-border)}
+    .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding-top:2px}
+    .nav-icon{width:44px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:var(--r-full);transition:background .2s;color:var(--clr-faint)}
+    .nav-item.active .nav-icon{background:rgba(45,125,110,0.1);color:var(--clr-teal)}
+    .nav-label{font-size:11px;font-weight:600;color:var(--clr-faint)}
+    .nav-item.active .nav-label{color:var(--clr-teal)}
+    .nav-center .nav-icon{width:52px;height:44px;background:var(--clr-forest);border-radius:var(--r-xl);color:white;box-shadow:0 4px 14px rgba(26,58,46,0.35);margin-top:-12px}
+    .nav-center .nav-label{color:var(--clr-forest);font-weight:700}
+
+    .phone-label{margin-top:14px;font-size:11px;color:rgba(255,255,255,0.28);font-family:var(--font-body);letter-spacing:1.2px;text-align:center}
+
+    /* Sort sheet */
+    .sheet-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.4);z-index:200;display:none;align-items:flex-end}
+    .sheet-overlay.open{display:flex;animation:fadein .25s}
+    @keyframes fadein{from{opacity:0}to{opacity:1}}
+    .sort-sheet{background:white;width:100%;border-radius:28px 28px 0 0;padding:20px 0 40px;animation:slideup .3s var(--ease-out)}
+    @keyframes slideup{from{transform:translateY(100%)}to{transform:translateY(0)}}
+    .sh-handle{width:36px;height:4px;background:var(--clr-border);border-radius:2px;margin:0 auto 16px}
+    .sh-title{font-size:15px;font-weight:700;color:var(--clr-text);padding:0 20px 12px}
+    .sh-opt{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;cursor:pointer;transition:background .15s}
+    .sh-opt:hover{background:var(--clr-bg)}
+    .sh-opt-lbl{font-size:14px;color:var(--clr-text)}
+    .sh-check{width:20px;height:20px;border-radius:var(--r-full);border:2px solid var(--clr-border);display:flex;align-items:center;justify-content:center}
+    .sh-check.on{background:var(--clr-teal);border-color:var(--clr-teal)}
+  </style>
+</head>
+<body>
+
+<div class="phone">
+
+  <!-- STATUS BAR -->
+  <div class="status-bar">
+    <span class="time" id="clock">9:41</span>
+    <div class="status-icons">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="currentColor"><rect x="0" y="5" width="3" height="7" rx="1" opacity=".4"/><rect x="4.5" y="3" width="3" height="9" rx="1" opacity=".6"/><rect x="9" y="1" width="3" height="11" rx="1" opacity=".8"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 4C3.8 1.5 8.2 1.5 11 4" stroke-linecap="round"/><path d="M3 6.5C4.8 4.8 7.2 4.8 9 6.5" stroke-linecap="round"/><circle cx="6" cy="9.5" r="1.3" fill="currentColor" stroke="none"/></svg>
+      <svg width="26" height="13" viewBox="0 0 26 13" fill="currentColor"><rect x="0" y="1" width="22" height="11" rx="2.5" stroke="currentColor" fill="none" stroke-width="1.2"/><rect x="1.5" y="2.5" width="16" height="8" rx="1.5"/><path d="M23 5v3c.9-.4 1.6-1 1.6-1.5S23.9 5.4 23 5z"/></svg>
+    </div>
+  </div>
+
+  <!-- STICKY TOP -->
+  <div class="sticky-top">
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+      <button class="back-btn" onclick="window.location.href='./03-home.html'">
+        <i data-lucide="arrow-left" style="width:18px;height:18px"></i>
+      </button>
+      <div class="ph-center">
+        <div class="ph-title" id="page-title">Yoga Experts</div>
+        <div class="ph-sub" id="page-sub">Kathmandu &amp; surrounding areas</div>
+      </div>
+      <div class="map-toggle">
+        <div class="mt-btn on" id="list-btn" onclick="setView('list')">
+          <i data-lucide="layout-list" style="width:16px;height:16px"></i>
+        </div>
+        <div class="mt-btn" id="map-btn" onclick="setView('map')">
+          <i data-lucide="map" style="width:16px;height:16px"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- FILTER CHIPS -->
+    <div class="filter-row">
+      <div class="fchip on" id="chip-avail" onclick="toggleChip(this)">
+        <i data-lucide="zap" style="width:12px;height:12px"></i> Available Now
+      </div>
+      <div class="fchip" id="chip-price" onclick="toggleChip(this)">
+        <i data-lucide="banknote" style="width:12px;height:12px"></i> Price Range
+      </div>
+      <div class="fchip" id="chip-rating" onclick="toggleChip(this)">
+        <i data-lucide="star" style="width:12px;height:12px"></i> 4.5+ Stars
+      </div>
+      <div class="fchip" id="chip-online" onclick="toggleChip(this)">
+        <i data-lucide="video" style="width:12px;height:12px"></i> Online Session
+      </div>
+      <div class="fchip" id="chip-inperson" onclick="toggleChip(this)">
+        <i data-lucide="map-pin" style="width:12px;height:12px"></i> In-Person
+      </div>
+    </div>
+  </div>
+
+  <!-- SORT + COUNT -->
+  <div class="sort-bar" id="sort-bar">
+    <div class="result-count">12 Experts <span>found</span></div>
+    <button class="sort-btn" onclick="openSort()">
+      <i data-lucide="arrow-up-down" style="width:14px;height:14px"></i>
+      Sort: Top Rated
+    </button>
+  </div>
+
+  <!-- LIST VIEW -->
+  <div class="scroll-body" id="list-view">
+
+    <!-- EXPERT 1 -->
+    <div class="xcard" onclick="window.location.href='./05-expert-profile.html'">
+      <div class="xc-top">
+        <div class="xc-avatar" style="background:linear-gradient(135deg,#d4ede7,#b5dbd2)">
+          🧘
+          <div class="avail-ring"></div>
+        </div>
+        <div class="xc-info">
+          <div class="xc-name-row">
+            <span class="xc-name">Sunita Sharma</span>
+            <div class="xc-verified"><i data-lucide="check" style="width:10px;height:10px;color:white"></i></div>
+          </div>
+          <div class="xc-spec">Yoga · Pranayama · Breathwork</div>
+          <div class="xc-loc">
+            <i data-lucide="map-pin" style="width:11px;height:11px"></i> Thamel, Kathmandu · 1.2 km
+          </div>
+          <div class="xc-tags">
+            <span class="xtag avail-now">⚡ Available now</span>
+            <span class="xtag online">Online</span>
+            <span class="xtag">In-person</span>
+            <span class="xtag">5 yrs exp</span>
+          </div>
+        </div>
+        <div class="xc-price">
+          <div class="xc-rate">Rs 800</div>
+          <div class="xc-unit">per hour</div>
+          <div class="xc-stars">
+            <span style="color:var(--clr-gold);font-size:12px">★★★★★</span>
+            <span class="xc-stars-val">5.0</span>
+            <span class="xc-stars-cnt">(48)</span>
+          </div>
+        </div>
+      </div>
+      <div class="xc-divider"></div>
+      <div class="xc-bottom">
+        <div class="xc-sessions">
+          <i data-lucide="calendar-check" style="width:13px;height:13px"></i>
+          120 sessions completed
+        </div>
+        <div class="xc-actions">
+          <button class="xc-fav" onclick="event.stopPropagation();toggleFav(this)">
+            <i data-lucide="heart" style="width:16px;height:16px"></i>
+          </button>
+          <button class="xc-book" onclick="event.stopPropagation();window.location.href='./05-expert-profile.html'">
+            Book <i data-lucide="arrow-right" style="width:13px;height:13px"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXPERT 2 -->
+    <div class="xcard" onclick="window.location.href='./05-expert-profile.html'">
+      <div class="xc-top">
+        <div class="xc-avatar" style="background:linear-gradient(135deg,#d6eaf8,#aed6f1)">
+          🧠
+          <div class="avail-ring"></div>
+        </div>
+        <div class="xc-info">
+          <div class="xc-name-row">
+            <span class="xc-name">Hari Poudel</span>
+            <div class="xc-verified"><i data-lucide="check" style="width:10px;height:10px;color:white"></i></div>
+          </div>
+          <div class="xc-spec">Meditation · Mindfulness</div>
+          <div class="xc-loc">
+            <i data-lucide="map-pin" style="width:11px;height:11px"></i> Lalitpur · 3.4 km
+          </div>
+          <div class="xc-tags">
+            <span class="xtag avail-now">⚡ Available now</span>
+            <span class="xtag online">Online</span>
+            <span class="xtag">3 yrs exp</span>
+          </div>
+        </div>
+        <div class="xc-price">
+          <div class="xc-rate">Rs 900</div>
+          <div class="xc-unit">per hour</div>
+          <div class="xc-stars">
+            <span style="color:var(--clr-gold);font-size:12px">★★★★☆</span>
+            <span class="xc-stars-val">4.8</span>
+            <span class="xc-stars-cnt">(29)</span>
+          </div>
+        </div>
+      </div>
+      <div class="xc-divider"></div>
+      <div class="xc-bottom">
+        <div class="xc-sessions">
+          <i data-lucide="calendar-check" style="width:13px;height:13px"></i>
+          67 sessions completed
+        </div>
+        <div class="xc-actions">
+          <button class="xc-fav" onclick="event.stopPropagation();toggleFav(this)">
+            <i data-lucide="heart" style="width:16px;height:16px"></i>
+          </button>
+          <button class="xc-book" onclick="event.stopPropagation();window.location.href='./05-expert-profile.html'">
+            Book <i data-lucide="arrow-right" style="width:13px;height:13px"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXPERT 3 -->
+    <div class="xcard" onclick="window.location.href='./05-expert-profile.html'">
+      <div class="xc-top">
+        <div class="xc-avatar" style="background:linear-gradient(135deg,#e8f5e9,#a5d6a7)">
+          🌿
+          <div class="avail-ring"></div>
+        </div>
+        <div class="xc-info">
+          <div class="xc-name-row">
+            <span class="xc-name">Anita Karmacharya</span>
+          </div>
+          <div class="xc-spec">Pranayama · Yoga</div>
+          <div class="xc-loc">
+            <i data-lucide="map-pin" style="width:11px;height:11px"></i> Bhaktapur · 8.1 km
+          </div>
+          <div class="xc-tags">
+            <span class="xtag avail-now">⚡ Available now</span>
+            <span class="xtag">In-person</span>
+            <span class="xtag">4 yrs exp</span>
+          </div>
+        </div>
+        <div class="xc-price">
+          <div class="xc-rate">Rs 700</div>
+          <div class="xc-unit">per hour</div>
+          <div class="xc-stars">
+            <span style="color:var(--clr-gold);font-size:12px">★★★★☆</span>
+            <span class="xc-stars-val">4.6</span>
+            <span class="xc-stars-cnt">(17)</span>
+          </div>
+        </div>
+      </div>
+      <div class="xc-divider"></div>
+      <div class="xc-bottom">
+        <div class="xc-sessions">
+          <i data-lucide="calendar-check" style="width:13px;height:13px"></i>
+          44 sessions completed
+        </div>
+        <div class="xc-actions">
+          <button class="xc-fav liked" onclick="event.stopPropagation();toggleFav(this)">
+            <i data-lucide="heart" style="width:16px;height:16px"></i>
+          </button>
+          <button class="xc-book" onclick="event.stopPropagation();window.location.href='./05-expert-profile.html'">
+            Book <i data-lucide="arrow-right" style="width:13px;height:13px"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXPERT 4 -->
+    <div class="xcard" onclick="window.location.href='./05-expert-profile.html'">
+      <div class="xc-top">
+        <div class="xc-avatar" style="background:linear-gradient(135deg,#fdebd0,#f5cba7)">
+          🔔
+          <div class="avail-ring busy"></div>
+        </div>
+        <div class="xc-info">
+          <div class="xc-name-row">
+            <span class="xc-name">Ramesh Thapa</span>
+            <div class="xc-verified"><i data-lucide="check" style="width:10px;height:10px;color:white"></i></div>
+          </div>
+          <div class="xc-spec">Singing Bowl · Sound Therapy</div>
+          <div class="xc-loc">
+            <i data-lucide="map-pin" style="width:11px;height:11px"></i> Pokhara (Online only)
+          </div>
+          <div class="xc-tags">
+            <span class="xtag" style="background:rgba(245,158,11,0.1);color:#b45309">⏰ In 1 hour</span>
+            <span class="xtag online">Online</span>
+            <span class="xtag">8 yrs exp</span>
+          </div>
+        </div>
+        <div class="xc-price">
+          <div class="xc-rate">Rs 1,200</div>
+          <div class="xc-unit">per hour</div>
+          <div class="xc-stars">
+            <span style="color:var(--clr-gold);font-size:12px">★★★★☆</span>
+            <span class="xc-stars-val">4.7</span>
+            <span class="xc-stars-cnt">(91)</span>
+          </div>
+        </div>
+      </div>
+      <div class="xc-divider"></div>
+      <div class="xc-bottom">
+        <div class="xc-sessions">
+          <i data-lucide="calendar-check" style="width:13px;height:13px"></i>
+          240 sessions completed
+        </div>
+        <div class="xc-actions">
+          <button class="xc-fav" onclick="event.stopPropagation();toggleFav(this)">
+            <i data-lucide="heart" style="width:16px;height:16px"></i>
+          </button>
+          <button class="xc-book" onclick="event.stopPropagation();window.location.href='./05-expert-profile.html'">
+            Book <i data-lucide="arrow-right" style="width:13px;height:13px"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXPERT 5 -->
+    <div class="xcard" onclick="window.location.href='./05-expert-profile.html'">
+      <div class="xc-top">
+        <div class="xc-avatar" style="background:linear-gradient(135deg,#e8d5f0,#d0a8e0)">
+          ✨
+          <div class="avail-ring offline"></div>
+        </div>
+        <div class="xc-info">
+          <div class="xc-name-row">
+            <span class="xc-name">Priya Maharjan</span>
+            <div class="xc-verified"><i data-lucide="check" style="width:10px;height:10px;color:white"></i></div>
+          </div>
+          <div class="xc-spec">Reiki · Energy Healing</div>
+          <div class="xc-loc">
+            <i data-lucide="map-pin" style="width:11px;height:11px"></i> Patan, Lalitpur · 4.7 km
+          </div>
+          <div class="xc-tags">
+            <span class="xtag">📅 Tomorrow available</span>
+            <span class="xtag">In-person</span>
+            <span class="xtag">Certified</span>
+          </div>
+        </div>
+        <div class="xc-price">
+          <div class="xc-rate">Rs 1,500</div>
+          <div class="xc-unit">per hour</div>
+          <div class="xc-stars">
+            <span style="color:var(--clr-gold);font-size:12px">★★★★★</span>
+            <span class="xc-stars-val">5.0</span>
+            <span class="xc-stars-cnt">(62)</span>
+          </div>
+        </div>
+      </div>
+      <div class="xc-divider"></div>
+      <div class="xc-bottom">
+        <div class="xc-sessions">
+          <i data-lucide="calendar-check" style="width:13px;height:13px"></i>
+          89 sessions completed
+        </div>
+        <div class="xc-actions">
+          <button class="xc-fav" onclick="event.stopPropagation();toggleFav(this)">
+            <i data-lucide="heart" style="width:16px;height:16px"></i>
+          </button>
+          <button class="xc-book" onclick="event.stopPropagation();window.location.href='./05-expert-profile.html'">
+            Book <i data-lucide="arrow-right" style="width:13px;height:13px"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+  </div><!-- /list-view -->
+
+  <!-- MAP VIEW -->
+  <div id="map-view">
+    <div class="map-mock">
+      <div class="map-road-h"></div>
+      <div class="map-road-h2"></div>
+      <div class="map-road-v"></div>
+      <div class="map-road-v2"></div>
+      <div class="map-user"></div>
+      <div class="map-pin" style="top:28%;left:38%" onclick="selectPin(0)">
+        <div class="pin-bubble active" id="pin0">Rs 800</div>
+        <div class="pin-tail active"></div>
+      </div>
+      <div class="map-pin" style="top:50%;left:62%" onclick="selectPin(1)">
+        <div class="pin-bubble" id="pin1">Rs 900</div>
+        <div class="pin-tail" id="tail1"></div>
+      </div>
+      <div class="map-pin" style="top:20%;left:70%" onclick="selectPin(2)">
+        <div class="pin-bubble" id="pin2">Rs 1,200</div>
+        <div class="pin-tail" id="tail2"></div>
+      </div>
+      <div class="map-pin" style="top:65%;left:30%" onclick="selectPin(3)">
+        <div class="pin-bubble" id="pin3">Rs 700</div>
+        <div class="pin-tail" id="tail3"></div>
+      </div>
+      <div class="map-pin" style="top:42%;left:18%" onclick="selectPin(4)">
+        <div class="pin-bubble" id="pin4">Rs 1,500</div>
+        <div class="pin-tail" id="tail4"></div>
+      </div>
+    </div>
+    <!-- Preview card at bottom -->
+    <div class="map-card-preview" onclick="window.location.href='./05-expert-profile.html'">
+      <div class="mcp-row">
+        <div class="mcp-av" id="mcp-avatar">🧘</div>
+        <div class="mcp-info">
+          <div class="mcp-name" id="mcp-name">Sunita Sharma</div>
+          <div class="mcp-spec" id="mcp-spec">Yoga · 5 yrs · ★★★★★</div>
+        </div>
+        <div class="mcp-right">
+          <div class="mcp-rate" id="mcp-rate">Rs 800</div>
+          <div class="mcp-unit">per hour</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="window.location.href='./03-home.html'">
+      <div class="nav-icon"><i data-lucide="home" style="width:22px;height:22px"></i></div>
+      <span class="nav-label">Home</span>
+    </div>
+    <div class="nav-item active">
+      <div class="nav-icon"><i data-lucide="search" style="width:22px;height:22px"></i></div>
+      <span class="nav-label">Explore</span>
+    </div>
+    <div class="nav-item nav-center">
+      <div class="nav-icon"><i data-lucide="calendar-plus" style="width:22px;height:22px"></i></div>
+      <span class="nav-label">Book</span>
+    </div>
+    <div class="nav-item">
+      <div class="nav-icon"><i data-lucide="receipt-text" style="width:22px;height:22px"></i></div>
+      <span class="nav-label">Sessions</span>
+    </div>
+    <div class="nav-item">
+      <div class="nav-icon"><i data-lucide="user-circle" style="width:22px;height:22px"></i></div>
+      <span class="nav-label">Profile</span>
+    </div>
+  </div>
+
+  <!-- SORT SHEET -->
+  <div class="sheet-overlay" id="sort-overlay" onclick="closeSort(event)">
+    <div class="sort-sheet" onclick="event.stopPropagation()">
+      <div class="sh-handle"></div>
+      <div class="sh-title">Sort By</div>
+      <div class="sh-opt" onclick="setSortOpt(this,'Top Rated')">
+        <span class="sh-opt-lbl">Top Rated</span>
+        <div class="sh-check on"><i data-lucide="check" style="width:12px;height:12px;color:white"></i></div>
+      </div>
+      <div class="sh-opt" onclick="setSortOpt(this,'Price: Low to High')">
+        <span class="sh-opt-lbl">Price: Low to High</span>
+        <div class="sh-check"></div>
+      </div>
+      <div class="sh-opt" onclick="setSortOpt(this,'Price: High to Low')">
+        <span class="sh-opt-lbl">Price: High to Low</span>
+        <div class="sh-check"></div>
+      </div>
+      <div class="sh-opt" onclick="setSortOpt(this,'Most Sessions')">
+        <span class="sh-opt-lbl">Most Sessions</span>
+        <div class="sh-check"></div>
+      </div>
+      <div class="sh-opt" onclick="setSortOpt(this,'Nearest First')">
+        <span class="sh-opt-lbl">Nearest First</span>
+        <div class="sh-check"></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /phone -->
+<div class="phone-label">PAGE 4 OF 6 &nbsp;·&nbsp; 04-expert-listing.html</div>
+
+<script>
+  lucide.createIcons();
+  function tick(){const n=new Date();document.getElementById('clock').textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')}
+  tick(); setInterval(tick,1000);
+
+  // View toggle
+  function setView(v){
+    const lv=document.getElementById('list-view');
+    const mv=document.getElementById('map-view');
+    const sb=document.getElementById('sort-bar');
+    const lb=document.getElementById('list-btn');
+    const mb=document.getElementById('map-btn');
+    if(v==='list'){
+      lv.style.display=''; mv.style.display='none'; sb.style.display='flex';
+      lb.classList.add('on'); mb.classList.remove('on');
+    } else {
+      lv.style.display='none'; mv.style.display='flex'; sb.style.display='none';
+      mb.classList.add('on'); lb.classList.remove('on');
+    }
+  }
+
+  // Filter chips
+  function toggleChip(el){ el.classList.toggle('on'); }
+
+  // Fav toggle
+  function toggleFav(btn){
+    btn.classList.toggle('liked');
+    btn.innerHTML=btn.classList.contains('liked')
+      ?'<i data-lucide="heart" style="width:16px;height:16px;fill:currentColor"></i>'
+      :'<i data-lucide="heart" style="width:16px;height:16px"></i>';
+    lucide.createIcons();
+  }
+
+  // Sort sheet
+  function openSort(){ document.getElementById('sort-overlay').classList.add('open'); lucide.createIcons(); }
+  function closeSort(e){ document.getElementById('sort-overlay').classList.remove('open'); }
+  let sortLabel='Top Rated';
+  function setSortOpt(row,label){
+    document.querySelectorAll('.sh-opt').forEach(r=>{
+      r.querySelector('.sh-check').classList.remove('on');
+      r.querySelector('.sh-check').innerHTML='';
+    });
+    row.querySelector('.sh-check').classList.add('on');
+    row.querySelector('.sh-check').innerHTML='<i data-lucide="check" style="width:12px;height:12px;color:white"></i>';
+    sortLabel=label;
+    document.querySelector('.sort-btn').innerHTML='<i data-lucide="arrow-up-down" style="width:14px;height:14px"></i> Sort: '+label;
+    lucide.createIcons();
+    setTimeout(closeSort,250);
+  }
+
+  // Map pins
+  const pinData=[
+    {name:'Sunita Sharma',spec:'Yoga · 5 yrs · ★★★★★',rate:'Rs 800',avatar:'🧘'},
+    {name:'Hari Poudel',spec:'Meditation · 3 yrs · ★★★★☆',rate:'Rs 900',avatar:'🧠'},
+    {name:'Ramesh Thapa',spec:'Singing Bowl · 8 yrs · ★★★★☆',rate:'Rs 1,200',avatar:'🔔'},
+    {name:'Anita K.',spec:'Pranayama · 4 yrs · ★★★★☆',rate:'Rs 700',avatar:'🌿'},
+    {name:'Priya Maharjan',spec:'Reiki · Certified · ★★★★★',rate:'Rs 1,500',avatar:'✨'}
+  ];
+  function selectPin(i){
+    document.querySelectorAll('.pin-bubble').forEach((p,idx)=>{
+      p.classList.toggle('active',idx===i);
+    });
+    document.querySelectorAll('.pin-tail').forEach((t,idx)=>{
+      t.classList.toggle('active',idx===i);
+    });
+    const d=pinData[i];
+    document.getElementById('mcp-name').textContent=d.name;
+    document.getElementById('mcp-spec').textContent=d.spec;
+    document.getElementById('mcp-rate').textContent=d.rate;
+    document.getElementById('mcp-avatar').textContent=d.avatar;
+  }
+</script>
+</body>
+</html>

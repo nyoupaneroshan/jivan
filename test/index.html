@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Jivan — Splash & Onboarding</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <style>
+    :root {
+      --font-display:'Cormorant Garamond',Georgia,serif;
+      --font-body:'Plus Jakarta Sans',system-ui,sans-serif;
+      --clr-forest:#1a3a2e; --clr-teal:#2d7d6e; --clr-teal-lt:#3d9e8c;
+      --clr-gold:#c9a84c; --clr-gold-lt:#e6c97a;
+      --clr-cream:#f5f0e8; --clr-cream-dk:#ede6d8; --clr-parchment:#faf7f2;
+      --clr-text:#1e2d24; --clr-muted:#5a7266; --clr-faint:#9ab5ac;
+      --r-sm:6px; --r-md:12px; --r-lg:20px; --r-xl:28px; --r-full:9999px;
+      --ease-out:cubic-bezier(0.16,1,0.3,1); --ease-in:cubic-bezier(0.4,0,1,1);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+    body{font-family:var(--font-body);background:#0d1f17;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100dvh;padding:16px}
+    button{cursor:pointer;border:none;background:none;font:inherit}
+    .phone{width:390px;height:844px;border-radius:48px;overflow:hidden;position:relative;box-shadow:0 40px 100px rgba(0,0,0,0.65),0 0 0 1px rgba(255,255,255,0.07);background:var(--clr-forest)}
+    /* STATUS BAR */
+    .status-bar{position:absolute;top:0;left:0;right:0;z-index:100;height:52px;display:flex;align-items:center;justify-content:space-between;padding:14px 28px 0}
+    .status-bar .time{font-size:15px;font-weight:600;color:#fff;letter-spacing:-0.3px}
+    .status-icons{display:flex;gap:4px;align-items:center;color:#fff}
+    /* SCREEN */
+    .screen{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity 0.45s var(--ease-out),transform 0.45s var(--ease-out);transform:translateX(28px);will-change:opacity,transform}
+    .screen.active{opacity:1;pointer-events:all;transform:translateX(0)}
+    .screen.exit{opacity:0;transform:translateX(-28px);transition:opacity 0.3s var(--ease-in),transform 0.3s var(--ease-in)}
+    /* SPLASH */
+    #splash{align-items:center;justify-content:center;background:var(--clr-forest)}
+    .splash-bg{position:absolute;inset:0;background:radial-gradient(ellipse 300px 300px at 50% 30%,rgba(45,125,110,0.4) 0%,transparent 70%),radial-gradient(ellipse 200px 200px at 80% 80%,rgba(201,168,76,0.18) 0%,transparent 60%)}
+    .splash-content{position:relative;z-index:1;text-align:center;padding:32px}
+    .logo-mark{width:88px;height:88px;background:linear-gradient(135deg,var(--clr-teal),var(--clr-teal-lt));border-radius:var(--r-xl);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;box-shadow:0 0 50px rgba(45,125,110,0.55),0 10px 28px rgba(0,0,0,0.35);animation:pulseglow 2.8s ease-in-out infinite}
+    @keyframes pulseglow{0%,100%{box-shadow:0 0 50px rgba(45,125,110,0.55),0 10px 28px rgba(0,0,0,0.35)}50%{box-shadow:0 0 80px rgba(45,125,110,0.85),0 10px 28px rgba(0,0,0,0.35)}}
+    .splash-title{font-family:var(--font-display);font-size:48px;font-weight:600;color:var(--clr-cream);letter-spacing:-0.5px;line-height:1.05;margin-bottom:8px}
+    .splash-tagline{font-size:12px;font-weight:400;color:var(--clr-faint);letter-spacing:3.5px;text-transform:uppercase;margin-bottom:72px}
+    .loader-dots{display:flex;gap:8px;justify-content:center}
+    .ld{width:7px;height:7px;border-radius:var(--r-full);background:var(--clr-faint);animation:ldpulse 1.3s ease-in-out infinite}
+    .ld:nth-child(2){animation-delay:.2s}.ld:nth-child(3){animation-delay:.4s}
+    @keyframes ldpulse{0%,80%,100%{transform:scale(0.75);opacity:0.4}40%{transform:scale(1.25);opacity:1;background:var(--clr-gold)}}
+    /* ONBOARDING */
+    #onboarding{background:var(--clr-parchment)}
+    .ob-skip{position:absolute;top:62px;right:20px;z-index:50;font-size:13px;color:var(--clr-muted);font-weight:500;padding:6px 14px;border-radius:var(--r-full);background:rgba(0,0,0,0.06);transition:background .2s,color .2s}
+    .ob-skip:hover{background:rgba(0,0,0,0.1);color:var(--clr-text)}
+    .ob-slider{flex:1;overflow:hidden;position:relative}
+    .ob-slides-wrap{display:flex;transition:transform 0.5s var(--ease-out);will-change:transform}
+    .ob-slide{min-width:390px;display:flex;flex-direction:column;align-items:center;padding-top:52px;position:relative;overflow:hidden}
+    /* Slide illustrations */
+    .slide-art{height:320px;display:flex;align-items:center;justify-content:center;width:100%}
+    /* Art 1 — service grid */
+    .art1-wrap{position:relative}
+    .art1-circle{width:230px;height:230px;border-radius:50%;background:linear-gradient(135deg,#d2ede8,#b5dbd2)}
+    .art1-icons{position:absolute;inset:0;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:30px;align-items:center;justify-items:center}
+    .ai-icon{width:48px;height:48px;background:white;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;color:var(--clr-teal);box-shadow:0 4px 14px rgba(0,0,0,0.1);animation:floatit 3s ease-in-out infinite}
+    .ai-icon:nth-child(1){animation-delay:0s}.ai-icon:nth-child(2){animation-delay:.25s}.ai-icon:nth-child(3){animation-delay:.5s}.ai-icon:nth-child(4){animation-delay:.75s}.ai-icon:nth-child(5){animation-delay:1s}.ai-icon:nth-child(6){animation-delay:1.25s}
+    @keyframes floatit{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+    /* Art 2 — expert cards */
+    .art2-wrap{display:flex;flex-direction:column;gap:10px}
+    .ecard{width:290px;background:white;border-radius:var(--r-lg);padding:12px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 6px 22px rgba(0,0,0,0.08)}
+    .ecard:nth-child(2){transform:translateX(22px)}
+    .ecard:nth-child(3){transform:translateX(8px)}
+    .eavatar{width:46px;height:46px;border-radius:var(--r-full);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px}
+    .ea-green{background:linear-gradient(135deg,#c8e6c9,#81c784)}
+    .ea-blue{background:linear-gradient(135deg,#bbdefb,#64b5f6)}
+    .ea-pink{background:linear-gradient(135deg,#f8bbd0,#f48fb1)}
+    .einfo{flex:1}.ename{font-size:13px;font-weight:600;color:var(--clr-text)}.estars{font-size:11px;color:var(--clr-gold);margin:1px 0}.etype{font-size:12px;color:var(--clr-muted)}
+    .erate-badge{background:var(--clr-forest);color:var(--clr-gold);font-size:11px;font-weight:700;padding:4px 9px;border-radius:var(--r-full);white-space:nowrap}
+    /* Art 3 — freelancer */
+    .art3-wrap{display:flex;flex-direction:column;align-items:center;gap:14px}
+    .regmock{width:270px;background:white;border-radius:var(--r-lg);padding:20px;box-shadow:0 10px 32px rgba(0,0,0,0.1)}
+    .regm-hdr{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+    .regm-av{width:50px;height:50px;border-radius:var(--r-full);background:linear-gradient(135deg,var(--clr-teal),var(--clr-forest));display:flex;align-items:center;justify-content:center;color:white;flex-shrink:0}
+    .regm-title{font-size:14px;font-weight:700;color:var(--clr-text)}.regm-sub{font-size:12px;color:var(--clr-muted);margin-top:2px}
+    .regm-row{height:34px;border-radius:6px;margin-bottom:8px;background:linear-gradient(90deg,#ede8e0 25%,#e5ddd4 50%,#ede8e0 75%);background-size:200% 100%;animation:shimmer 1.8s ease-in-out infinite}
+    .regm-row.half{width:55%}
+    @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+    .regm-btn{height:38px;width:100%;border-radius:8px;background:linear-gradient(90deg,var(--clr-teal),var(--clr-teal-lt));display:flex;align-items:center;justify-content:center;color:white;font-size:13px;font-weight:600;margin-top:12px}
+    .earn-pill{background:var(--clr-forest);color:var(--clr-gold);padding:8px 18px;border-radius:var(--r-full);font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px}
+    /* Slide text */
+    .ob-text{text-align:center;padding:0 32px;margin-top:20px}
+    .ob-text h2{font-family:var(--font-display);font-size:30px;font-weight:600;color:var(--clr-text);line-height:1.2;margin-bottom:10px}
+    .ob-text p{font-size:14px;color:var(--clr-muted);line-height:1.65}
+    /* Dots */
+    .ob-dots{display:flex;justify-content:center;gap:8px;padding:16px 0 10px}
+    .ob-dot{height:6px;border-radius:var(--r-full);background:var(--clr-cream-dk);transition:width .35s var(--ease-out),background .35s;width:6px}
+    .ob-dot.on{width:26px;background:var(--clr-teal)}
+    /* Footer */
+    .ob-footer{padding:0 24px 44px;display:flex;flex-direction:column;gap:12px}
+    .btn-primary{height:56px;border-radius:var(--r-full);background:var(--clr-forest);color:var(--clr-cream);font-size:16px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;box-shadow:0 6px 22px rgba(26,58,46,0.32);letter-spacing:-0.2px;transition:transform .15s,box-shadow .15s}
+    .btn-primary:active{transform:scale(0.97)}
+    .btn-text{font-size:14px;color:var(--clr-muted);display:flex;align-items:center;justify-content:center;gap:4px;cursor:pointer;padding:8px;transition:color .2s}
+    .btn-text strong{color:var(--clr-teal)}
+    .phone-label{margin-top:14px;font-size:11px;color:rgba(255,255,255,0.28);font-family:var(--font-body);letter-spacing:1.2px;text-align:center}
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <!-- STATUS BAR -->
+    <div class="status-bar">
+      <span class="time" id="clock">9:41</span>
+      <div class="status-icons">
+        <svg width="17" height="12" viewBox="0 0 17 12" fill="currentColor"><rect x="0" y="5" width="3" height="7" rx="1" opacity=".4"/><rect x="4.5" y="3" width="3" height="9" rx="1" opacity=".6"/><rect x="9" y="1" width="3" height="11" rx="1" opacity=".8"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 4C3.8 1.5 8.2 1.5 11 4" stroke-linecap="round"/><path d="M3 6.5C4.8 4.8 7.2 4.8 9 6.5" stroke-linecap="round"/><circle cx="6" cy="9.5" r="1.3" fill="currentColor" stroke="none"/></svg>
+        <svg width="26" height="13" viewBox="0 0 26 13" fill="currentColor"><rect x="0" y="1" width="22" height="11" rx="2.5" stroke="currentColor" fill="none" stroke-width="1.2"/><rect x="1.5" y="2.5" width="16" height="8" rx="1.5"/><path d="M23 5v3c.9-.4 1.6-1 1.6-1.5S23.9 5.4 23 5z"/></svg>
+      </div>
+    </div>
+
+    <!-- SPLASH SCREEN -->
+    <div class="screen active" id="splash">
+      <div class="splash-bg"></div>
+      <div class="splash-content">
+        <div class="logo-mark">
+          <!-- Lotus SVG logo -->
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+            <ellipse cx="24" cy="16" rx="5.5" ry="10" fill="rgba(255,255,255,0.92)"/>
+            <ellipse cx="24" cy="16" rx="5.5" ry="10" fill="rgba(255,255,255,0.72)" transform="rotate(45 24 24)"/>
+            <ellipse cx="24" cy="16" rx="5.5" ry="10" fill="rgba(255,255,255,0.72)" transform="rotate(90 24 24)"/>
+            <ellipse cx="24" cy="16" rx="5.5" ry="10" fill="rgba(255,255,255,0.52)" transform="rotate(135 24 24)"/>
+            <ellipse cx="24" cy="16" rx="5.5" ry="10" fill="rgba(255,255,255,0.52)" transform="rotate(180 24 24)"/>
+            <ellipse cx="24" cy="16" rx="5.5" ry="10" fill="rgba(255,255,255,0.52)" transform="rotate(225 24 24)"/>
+            <ellipse cx="24" cy="16" rx="5.5" ry="10" fill="rgba(255,255,255,0.72)" transform="rotate(270 24 24)"/>
+            <ellipse cx="24" cy="16" rx="5.5" ry="10" fill="rgba(255,255,255,0.72)" transform="rotate(315 24 24)"/>
+            <circle cx="24" cy="24" r="6" fill="white"/>
+          </svg>
+        </div>
+        <div class="splash-title">Jivan</div>
+        <div class="splash-tagline">Transform Your Well-being</div>
+        <div class="loader-dots">
+          <div class="ld"></div><div class="ld"></div><div class="ld"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ONBOARDING SCREEN -->
+    <div class="screen" id="onboarding">
+      <button class="ob-skip" onclick="goToSlide(2)">Skip</button>
+      <div class="ob-slider" id="slider">
+        <div class="ob-slides-wrap" id="slides-wrap">
+
+          <!-- SLIDE 1 -->
+          <div class="ob-slide">
+            <div class="slide-art">
+              <div class="art1-wrap">
+                <div class="art1-circle"></div>
+                <div class="art1-icons">
+                  <div class="ai-icon"><i data-lucide="person-standing" style="width:22px;height:22px"></i></div>
+                  <div class="ai-icon"><i data-lucide="heart-pulse" style="width:22px;height:22px"></i></div>
+                  <div class="ai-icon"><i data-lucide="music-2" style="width:22px;height:22px"></i></div>
+                  <div class="ai-icon"><i data-lucide="sparkles" style="width:22px;height:22px"></i></div>
+                  <div class="ai-icon"><i data-lucide="wind" style="width:22px;height:22px"></i></div>
+                  <div class="ai-icon"><i data-lucide="leaf" style="width:22px;height:22px"></i></div>
+                </div>
+              </div>
+            </div>
+            <div class="ob-text">
+              <h2>Choose Your Healing Path</h2>
+              <p>Browse Yoga, Meditation, Singing Bowl, Reiki &amp; more — then find the perfect expert for your journey.</p>
+            </div>
+          </div>
+
+          <!-- SLIDE 2 -->
+          <div class="ob-slide">
+            <div class="slide-art">
+              <div class="art2-wrap">
+                <div class="ecard">
+                  <div class="eavatar ea-green">🧘</div>
+                  <div class="einfo">
+                    <div class="ename">Sunita Sharma</div>
+                    <div class="estars">★★★★★</div>
+                    <div class="etype">Yoga · 5 yrs exp</div>
+                  </div>
+                  <div class="erate-badge">Rs 800/hr</div>
+                </div>
+                <div class="ecard">
+                  <div class="eavatar ea-blue">🔔</div>
+                  <div class="einfo">
+                    <div class="ename">Ramesh Thapa</div>
+                    <div class="estars">★★★★☆</div>
+                    <div class="etype">Singing Bowl · 8 yrs</div>
+                  </div>
+                  <div class="erate-badge">Rs 1,200/hr</div>
+                </div>
+                <div class="ecard">
+                  <div class="eavatar ea-pink">✨</div>
+                  <div class="einfo">
+                    <div class="ename">Priya Maharjan</div>
+                    <div class="estars">★★★★★</div>
+                    <div class="etype">Reiki · Certified</div>
+                  </div>
+                  <div class="erate-badge">Rs 1,500/hr</div>
+                </div>
+              </div>
+            </div>
+            <div class="ob-text">
+              <h2>Verified Experts, Real Rates</h2>
+              <p>Browse certified practitioners with transparent hourly pricing, real ratings, and live availability.</p>
+            </div>
+          </div>
+
+          <!-- SLIDE 3 -->
+          <div class="ob-slide">
+            <div class="slide-art">
+              <div class="art3-wrap">
+                <div class="regmock">
+                  <div class="regm-hdr">
+                    <div class="regm-av"><i data-lucide="user-plus" style="width:22px;height:22px"></i></div>
+                    <div><div class="regm-title">Join as Trainer</div><div class="regm-sub">Earn on your schedule</div></div>
+                  </div>
+                  <div class="regm-row"></div>
+                  <div class="regm-row half"></div>
+                  <div class="regm-row"></div>
+                  <div class="regm-btn">Apply Now →</div>
+                </div>
+                <div class="earn-pill">
+                  <i data-lucide="trending-up" style="width:15px;height:15px"></i>
+                  Earn Rs 800 – 3,000/hr
+                </div>
+              </div>
+            </div>
+            <div class="ob-text">
+              <h2>Are You a Practitioner?</h2>
+              <p>Register as a freelance trainer, set your own hourly rate, and connect with clients across Nepal.</p>
+            </div>
+          </div>
+
+        </div><!-- /slides-wrap -->
+      </div><!-- /ob-slider -->
+
+      <div class="ob-dots">
+        <div class="ob-dot on" id="d0"></div>
+        <div class="ob-dot" id="d1"></div>
+        <div class="ob-dot" id="d2"></div>
+      </div>
+
+      <div class="ob-footer">
+        <button class="btn-primary" onclick="obNext()">
+          <span id="ob-btn-lbl">Continue</span>
+          <i data-lucide="arrow-right" style="width:18px;height:18px"></i>
+        </button>
+        <div class="btn-text" onclick="gotoAuth()">
+          Already have an account? <strong>Sign in</strong>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /phone -->
+  <div class="phone-label">PAGE 1 OF 6 &nbsp;·&nbsp; SPLASH + ONBOARDING</div>
+
+  <script>
+    lucide.createIcons();
+
+    // Clock
+    function tick(){const n=new Date();document.getElementById('clock').textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')}
+    tick(); setInterval(tick,1000);
+
+    // Splash → Onboarding
+    function switchScreen(a,b){
+      const fa=document.getElementById(a),fb=document.getElementById(b);
+      fa.classList.add('exit');
+      setTimeout(()=>fa.classList.remove('active','exit'),320);
+      setTimeout(()=>{fb.classList.add('active');lucide.createIcons()},200);
+    }
+    setTimeout(()=>switchScreen('splash','onboarding'),2700);
+
+    // Onboarding
+    let slide=0;
+    const wrap=document.getElementById('slides-wrap');
+    const lbl=document.getElementById('ob-btn-lbl');
+    function setDots(){
+      [0,1,2].forEach(i=>{
+        const d=document.getElementById('d'+i);
+        d.classList.toggle('on',i===slide);
+      });
+      lbl.textContent=slide===2?'Get Started':'Continue';
+    }
+    function goToSlide(i){slide=i;wrap.style.transform=`translateX(-${i*390}px)`;setDots()}
+    function obNext(){if(slide<2){goToSlide(slide+1)}else{gotoAuth()}}
+    function gotoAuth(){window.location.href='./02-auth.html'}
+
+    // Swipe
+    let tx=0;
+    const sl=document.getElementById('slider');
+    sl.addEventListener('touchstart',e=>{tx=e.touches[0].clientX},{passive:true});
+    sl.addEventListener('touchend',e=>{
+      const d=tx-e.changedTouches[0].clientX;
+      if(Math.abs(d)>45){if(d>0&&slide<2)goToSlide(slide+1);else if(d<0&&slide>0)goToSlide(slide-1)}
+    },{passive:true});
+  </script>
+</body>
+</html>

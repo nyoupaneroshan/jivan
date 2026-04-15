@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+  <title>Jivan — Sign In / Register</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <style>
+    /* ── TOKENS ─────────────────────────── */
+    :root {
+      --font-display:'Cormorant Garamond',Georgia,serif;
+      --font-body:'Plus Jakarta Sans',system-ui,sans-serif;
+      --clr-forest:#1a3a2e; --clr-teal:#2d7d6e; --clr-teal-lt:#3d9e8c;
+      --clr-gold:#c9a84c;   --clr-gold-lt:#e6c97a;
+      --clr-cream:#f5f0e8;  --clr-cream-dk:#ede6d8;
+      --clr-parchment:#faf7f2;
+      --clr-text:#1e2d24;   --clr-muted:#5a7266;  --clr-faint:#9ab5ac;
+      --clr-border:#ddd8cf; --clr-error:#c0392b;  --clr-success:#2d7d6e;
+      --r-sm:6px; --r-md:12px; --r-lg:18px; --r-xl:26px; --r-full:9999px;
+      --ease-out:cubic-bezier(0.16,1,0.3,1);
+      --ease-in:cubic-bezier(0.4,0,1,1);
+      --transition:all 0.3s var(--ease-out);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+    body{font-family:var(--font-body);background:#0d1f17;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100dvh;padding:16px}
+    button,input{cursor:pointer;border:none;background:none;font:inherit}
+    input{cursor:text}
+
+    /* ── PHONE FRAME ─────────────────────── */
+    .phone{width:390px;height:844px;border-radius:48px;overflow:hidden;position:relative;box-shadow:0 40px 100px rgba(0,0,0,0.65),0 0 0 1px rgba(255,255,255,0.07);background:var(--clr-parchment);display:flex;flex-direction:column}
+
+    /* ── STATUS BAR ──────────────────────── */
+    .status-bar{flex-shrink:0;height:52px;display:flex;align-items:center;justify-content:space-between;padding:14px 28px 0;background:var(--clr-forest)}
+    .status-bar .time{font-size:15px;font-weight:600;color:#fff;letter-spacing:-0.3px}
+    .status-icons{display:flex;gap:4px;align-items:center;color:#fff}
+
+    /* ── HEADER HERO ─────────────────────── */
+    .auth-hero{background:var(--clr-forest);padding:20px 28px 32px;position:relative;overflow:hidden;flex-shrink:0}
+    .hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 280px 200px at 90% 50%,rgba(45,125,110,0.35) 0%,transparent 70%),radial-gradient(ellipse 150px 150px at 10% 80%,rgba(201,168,76,0.15) 0%,transparent 60%)}
+    .back-btn{position:relative;z-index:2;width:36px;height:36px;border-radius:var(--r-full);background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;color:var(--clr-cream);margin-bottom:16px;transition:background .2s}
+    .back-btn:hover{background:rgba(255,255,255,0.18)}
+    .hero-logo{display:flex;align-items:center;gap:10px;position:relative;z-index:2}
+    .logo-sm{width:38px;height:38px;background:linear-gradient(135deg,var(--clr-teal),var(--clr-teal-lt));border-radius:10px;display:flex;align-items:center;justify-content:center}
+    .hero-brand{font-family:var(--font-display);font-size:26px;font-weight:600;color:var(--clr-cream);letter-spacing:-0.3px}
+    .hero-tagline{font-size:12px;color:var(--clr-faint);margin-top:2px;letter-spacing:0.3px}
+
+    /* ── CONTENT AREA ────────────────────── */
+    .auth-body{flex:1;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column}
+    .auth-body::-webkit-scrollbar{display:none}
+
+    /* ── TABS ────────────────────────────── */
+    .tab-bar{display:flex;gap:0;padding:20px 24px 0;flex-shrink:0}
+    .tab-btn{flex:1;height:44px;border-radius:var(--r-full) var(--r-full) 0 0;font-size:14px;font-weight:600;color:var(--clr-muted);cursor:pointer;transition:var(--transition);position:relative;border:none;background:none}
+    .tab-btn.active{color:var(--clr-forest)}
+    .tab-btn.active::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:40px;height:3px;background:var(--clr-teal);border-radius:2px 2px 0 0}
+    .tab-divider{height:1px;background:var(--clr-border);margin:0 24px}
+
+    /* ── FORMS ───────────────────────────── */
+    .form-panel{display:none;padding:20px 24px 0;flex-direction:column;gap:14px;animation:fadeUp .35s var(--ease-out) both}
+    .form-panel.show{display:flex}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+    /* Role toggle (User / Trainer) */
+    .role-toggle{display:flex;background:var(--clr-cream-dk);border-radius:var(--r-full);padding:3px;gap:2px;margin-bottom:4px}
+    .role-btn{flex:1;height:36px;border-radius:var(--r-full);font-size:13px;font-weight:600;color:var(--clr-muted);transition:var(--transition);text-align:center;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer}
+    .role-btn.active{background:var(--clr-forest);color:var(--clr-cream);box-shadow:0 3px 10px rgba(26,58,46,0.25)}
+
+    /* Input group */
+    .input-group{display:flex;flex-direction:column;gap:5px}
+    .input-label{font-size:12px;font-weight:600;color:var(--clr-muted);letter-spacing:0.4px;text-transform:uppercase}
+    .input-wrap{position:relative}
+    .input-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--clr-faint);pointer-events:none;transition:color .2s}
+    .input-field{width:100%;height:52px;border-radius:var(--r-md);border:1.5px solid var(--clr-border);background:white;font-size:15px;color:var(--clr-text);padding:0 14px 0 44px;outline:none;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none}
+    .input-field:focus{border-color:var(--clr-teal);box-shadow:0 0 0 3px rgba(45,125,110,0.12)}
+    .input-field:focus+.input-icon,.input-field:focus~.input-icon{color:var(--clr-teal)}
+    .input-field.has-toggle{padding-right:46px}
+    .input-wrap:focus-within .input-icon{color:var(--clr-teal)}
+    /* eye toggle */
+    .eye-btn{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--clr-faint);padding:4px;transition:color .2s}
+    .eye-btn:hover{color:var(--clr-teal)}
+
+    /* Forgot */
+    .forgot-row{display:flex;justify-content:flex-end;margin-top:-6px}
+    .forgot-link{font-size:12px;color:var(--clr-teal);font-weight:500;cursor:pointer;padding:2px 0}
+
+    /* Specialties (register — trainer) */
+    .spec-label{font-size:12px;font-weight:600;color:var(--clr-muted);letter-spacing:0.4px;text-transform:uppercase;margin-bottom:6px}
+    .spec-chips{display:flex;flex-wrap:wrap;gap:8px}
+    .spec-chip{padding:7px 14px;border-radius:var(--r-full);border:1.5px solid var(--clr-border);font-size:12px;font-weight:500;color:var(--clr-muted);background:white;cursor:pointer;transition:var(--transition);display:flex;align-items:center;gap:5px}
+    .spec-chip.picked{border-color:var(--clr-teal);background:rgba(45,125,110,0.07);color:var(--clr-teal)}
+
+    /* Primary button */
+    .btn-primary{height:54px;border-radius:var(--r-full);background:var(--clr-forest);color:var(--clr-cream);font-size:16px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;box-shadow:0 6px 22px rgba(26,58,46,0.28);letter-spacing:-0.2px;transition:transform .15s,box-shadow .15s;margin-top:4px;border:none;width:100%}
+    .btn-primary:active{transform:scale(0.97);box-shadow:0 3px 10px rgba(26,58,46,0.28)}
+    .btn-primary.gold{background:linear-gradient(135deg,var(--clr-gold),var(--clr-gold-lt));color:var(--clr-forest);box-shadow:0 6px 22px rgba(201,168,76,0.3)}
+
+    /* Divider */
+    .or-row{display:flex;align-items:center;gap:10px;margin:2px 0}
+    .or-line{flex:1;height:1px;background:var(--clr-border)}
+    .or-text{font-size:12px;color:var(--clr-faint);font-weight:500;white-space:nowrap}
+
+    /* Social btn */
+    .btn-social{height:50px;border-radius:var(--r-full);border:1.5px solid var(--clr-border);background:white;font-size:14px;font-weight:500;color:var(--clr-text);display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:border-color .2s,box-shadow .2s;width:100%}
+    .btn-social:hover{border-color:var(--clr-teal);box-shadow:0 2px 10px rgba(0,0,0,0.06)}
+    .google-g{width:20px;height:20px;flex-shrink:0}
+
+    /* Terms */
+    .terms-note{font-size:11px;color:var(--clr-faint);text-align:center;line-height:1.6;padding-bottom:28px;margin-top:4px}
+    .terms-note a{color:var(--clr-teal);text-decoration:none;font-weight:500}
+
+    /* ── TRAINER INFO CARD ───────────────── */
+    .trainer-card{background:linear-gradient(135deg,var(--clr-forest),#0f2219);border-radius:var(--r-lg);padding:16px;display:flex;gap:12px;align-items:flex-start}
+    .tc-icon{width:36px;height:36px;background:rgba(201,168,76,0.15);border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--clr-gold)}
+    .tc-title{font-size:13px;font-weight:700;color:var(--clr-cream);margin-bottom:3px}
+    .tc-body{font-size:12px;color:var(--clr-faint);line-height:1.5}
+    .tc-earn{display:inline-flex;align-items:center;gap:5px;background:rgba(201,168,76,0.2);color:var(--clr-gold);font-size:11px;font-weight:600;padding:3px 10px;border-radius:var(--r-full);margin-top:6px}
+
+    .phone-label{margin-top:14px;font-size:11px;color:rgba(255,255,255,0.28);font-family:var(--font-body);letter-spacing:1.2px;text-align:center}
+  </style>
+</head>
+<body>
+
+<div class="phone">
+
+  <!-- STATUS BAR -->
+  <div class="status-bar">
+    <span class="time" id="clock">9:41</span>
+    <div class="status-icons">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="currentColor"><rect x="0" y="5" width="3" height="7" rx="1" opacity=".4"/><rect x="4.5" y="3" width="3" height="9" rx="1" opacity=".6"/><rect x="9" y="1" width="3" height="11" rx="1" opacity=".8"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 4C3.8 1.5 8.2 1.5 11 4" stroke-linecap="round"/><path d="M3 6.5C4.8 4.8 7.2 4.8 9 6.5" stroke-linecap="round"/><circle cx="6" cy="9.5" r="1.3" fill="currentColor" stroke="none"/></svg>
+      <svg width="26" height="13" viewBox="0 0 26 13" fill="currentColor"><rect x="0" y="1" width="22" height="11" rx="2.5" stroke="currentColor" fill="none" stroke-width="1.2"/><rect x="1.5" y="2.5" width="16" height="8" rx="1.5"/><path d="M23 5v3c.9-.4 1.6-1 1.6-1.5S23.9 5.4 23 5z"/></svg>
+    </div>
+  </div>
+
+  <!-- HERO HEADER -->
+  <div class="auth-hero">
+    <div class="hero-bg"></div>
+    <button class="back-btn" onclick="history.back()">
+      <i data-lucide="arrow-left" style="width:18px;height:18px"></i>
+    </button>
+    <div class="hero-logo">
+      <div class="logo-sm">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+          <ellipse cx="11" cy="7" rx="2.8" ry="5" fill="rgba(255,255,255,0.92)"/>
+          <ellipse cx="11" cy="7" rx="2.8" ry="5" fill="rgba(255,255,255,0.7)" transform="rotate(45 11 11)"/>
+          <ellipse cx="11" cy="7" rx="2.8" ry="5" fill="rgba(255,255,255,0.7)" transform="rotate(90 11 11)"/>
+          <ellipse cx="11" cy="7" rx="2.8" ry="5" fill="rgba(255,255,255,0.5)" transform="rotate(135 11 11)"/>
+          <ellipse cx="11" cy="7" rx="2.8" ry="5" fill="rgba(255,255,255,0.5)" transform="rotate(180 11 11)"/>
+          <ellipse cx="11" cy="7" rx="2.8" ry="5" fill="rgba(255,255,255,0.5)" transform="rotate(225 11 11)"/>
+          <ellipse cx="11" cy="7" rx="2.8" ry="5" fill="rgba(255,255,255,0.7)" transform="rotate(270 11 11)"/>
+          <ellipse cx="11" cy="7" rx="2.8" ry="5" fill="rgba(255,255,255,0.7)" transform="rotate(315 11 11)"/>
+          <circle cx="11" cy="11" r="3" fill="white"/>
+        </svg>
+      </div>
+      <div>
+        <div class="hero-brand">Jivan</div>
+        <div class="hero-tagline">Transform Your Well-being</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCROLLABLE BODY -->
+  <div class="auth-body" id="auth-body">
+
+    <!-- TABS -->
+    <div class="tab-bar">
+      <button class="tab-btn active" id="tab-signin" onclick="switchTab('signin')">Sign In</button>
+      <button class="tab-btn" id="tab-register" onclick="switchTab('register')">Register</button>
+    </div>
+    <div class="tab-divider"></div>
+
+    <!-- ░░ SIGN IN PANEL ░░ -->
+    <div class="form-panel show" id="panel-signin">
+
+      <!-- Google -->
+      <button class="btn-social" onclick="handleSocial()">
+        <svg class="google-g" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Continue with Google
+      </button>
+
+      <div class="or-row">
+        <div class="or-line"></div>
+        <span class="or-text">or sign in with email</span>
+        <div class="or-line"></div>
+      </div>
+
+      <!-- Email -->
+      <div class="input-group">
+        <label class="input-label">Email Address</label>
+        <div class="input-wrap">
+          <i data-lucide="mail" class="input-icon" style="width:18px;height:18px"></i>
+          <input class="input-field" type="email" placeholder="you@example.com" id="si-email">
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="input-group">
+        <label class="input-label">Password</label>
+        <div class="input-wrap">
+          <i data-lucide="lock" class="input-icon" style="width:18px;height:18px"></i>
+          <input class="input-field has-toggle" type="password" placeholder="Enter password" id="si-pass">
+          <button class="eye-btn" onclick="toggleEye('si-pass',this)" tabindex="-1">
+            <i data-lucide="eye" style="width:18px;height:18px"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="forgot-row">
+        <span class="forgot-link" onclick="showForgot()">Forgot password?</span>
+      </div>
+
+      <button class="btn-primary" onclick="handleSignIn()">
+        Sign In
+        <i data-lucide="arrow-right" style="width:18px;height:18px"></i>
+      </button>
+
+      <div class="terms-note">
+        By continuing you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+      </div>
+
+    </div><!-- /panel-signin -->
+
+
+    <!-- ░░ REGISTER PANEL ░░ -->
+    <div class="form-panel" id="panel-register">
+
+      <!-- Role toggle -->
+      <div>
+        <div class="spec-label">I want to</div>
+        <div class="role-toggle">
+          <div class="role-btn active" id="role-user" onclick="setRole('user')">
+            <i data-lucide="user" style="width:14px;height:14px"></i> Find Experts
+          </div>
+          <div class="role-btn" id="role-trainer" onclick="setRole('trainer')">
+            <i data-lucide="briefcase" style="width:14px;height:14px"></i> Join as Trainer
+          </div>
+        </div>
+      </div>
+
+      <!-- Trainer info card (hidden by default) -->
+      <div class="trainer-card" id="trainer-card" style="display:none">
+        <div class="tc-icon"><i data-lucide="trending-up" style="width:18px;height:18px"></i></div>
+        <div>
+          <div class="tc-title">Earn as a Freelance Trainer</div>
+          <div class="tc-body">Set your own hourly rate, choose your availability, and grow your client base on Jivan.</div>
+          <span class="tc-earn"><i data-lucide="zap" style="width:11px;height:11px"></i> Rs 800 – 3,000/hr potential</span>
+        </div>
+      </div>
+
+      <!-- Google -->
+      <button class="btn-social" onclick="handleSocial()">
+        <svg class="google-g" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84z"/></svg>
+        Continue with Google
+      </button>
+
+      <div class="or-row">
+        <div class="or-line"></div>
+        <span class="or-text">or register with email</span>
+        <div class="or-line"></div>
+      </div>
+
+      <!-- Full Name -->
+      <div class="input-group">
+        <label class="input-label">Full Name</label>
+        <div class="input-wrap">
+          <i data-lucide="user" class="input-icon" style="width:18px;height:18px"></i>
+          <input class="input-field" type="text" placeholder="Your full name" id="reg-name">
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div class="input-group">
+        <label class="input-label">Email Address</label>
+        <div class="input-wrap">
+          <i data-lucide="mail" class="input-icon" style="width:18px;height:18px"></i>
+          <input class="input-field" type="email" placeholder="you@example.com" id="reg-email">
+        </div>
+      </div>
+
+      <!-- Phone -->
+      <div class="input-group">
+        <label class="input-label">Phone Number</label>
+        <div class="input-wrap">
+          <i data-lucide="phone" class="input-icon" style="width:18px;height:18px"></i>
+          <input class="input-field" type="tel" placeholder="+977 98XXXXXXXX" id="reg-phone">
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="input-group">
+        <label class="input-label">Password</label>
+        <div class="input-wrap">
+          <i data-lucide="lock" class="input-icon" style="width:18px;height:18px"></i>
+          <input class="input-field has-toggle" type="password" placeholder="Create a password" id="reg-pass">
+          <button class="eye-btn" onclick="toggleEye('reg-pass',this)" tabindex="-1">
+            <i data-lucide="eye" style="width:18px;height:18px"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Specialties (trainer only) -->
+      <div id="spec-section" style="display:none">
+        <div class="spec-label">Your Specialties</div>
+        <div class="spec-chips">
+          <div class="spec-chip" onclick="toggleChip(this)"><i data-lucide="person-standing" style="width:13px;height:13px"></i> Yoga</div>
+          <div class="spec-chip" onclick="toggleChip(this)"><i data-lucide="music-2" style="width:13px;height:13px"></i> Singing Bowl</div>
+          <div class="spec-chip" onclick="toggleChip(this)"><i data-lucide="sparkles" style="width:13px;height:13px"></i> Reiki</div>
+          <div class="spec-chip" onclick="toggleChip(this)"><i data-lucide="wind" style="width:13px;height:13px"></i> Meditation</div>
+          <div class="spec-chip" onclick="toggleChip(this)"><i data-lucide="heart-pulse" style="width:13px;height:13px"></i> Healing</div>
+          <div class="spec-chip" onclick="toggleChip(this)"><i data-lucide="leaf" style="width:13px;height:13px"></i> Pranayama</div>
+        </div>
+      </div>
+
+      <!-- Hourly Rate (trainer only) -->
+      <div id="rate-section" style="display:none" class="input-group">
+        <label class="input-label">Your Hourly Rate (NPR)</label>
+        <div class="input-wrap">
+          <i data-lucide="banknote" class="input-icon" style="width:18px;height:18px"></i>
+          <input class="input-field" type="number" placeholder="e.g. 1200" id="reg-rate" min="200">
+        </div>
+      </div>
+
+      <button class="btn-primary gold" id="reg-btn" onclick="handleRegister()">
+        Create Account
+        <i data-lucide="arrow-right" style="width:18px;height:18px"></i>
+      </button>
+
+      <div class="terms-note">
+        By registering you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+      </div>
+
+    </div><!-- /panel-register -->
+
+  </div><!-- /auth-body -->
+
+</div><!-- /phone -->
+<div class="phone-label">PAGE 2 OF 6 &nbsp;·&nbsp; 02-auth.html</div>
+
+<script>
+  lucide.createIcons();
+
+  // Clock
+  function tick(){const n=new Date();document.getElementById('clock').textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')}
+  tick(); setInterval(tick,1000);
+
+  // Tab switch
+  function switchTab(tab){
+    document.getElementById('tab-signin').classList.toggle('active', tab==='signin');
+    document.getElementById('tab-register').classList.toggle('active', tab==='register');
+    const sp=document.getElementById('panel-signin');
+    const rp=document.getElementById('panel-register');
+    if(tab==='signin'){
+      sp.classList.add('show'); rp.classList.remove('show');
+    } else {
+      rp.classList.add('show'); sp.classList.remove('show');
+    }
+    lucide.createIcons();
+    document.getElementById('auth-body').scrollTop=0;
+  }
+
+  // Role toggle (register)
+  let currentRole='user';
+  function setRole(role){
+    currentRole=role;
+    document.getElementById('role-user').classList.toggle('active',role==='user');
+    document.getElementById('role-trainer').classList.toggle('active',role==='trainer');
+    const tc=document.getElementById('trainer-card');
+    const ss=document.getElementById('spec-section');
+    const rs=document.getElementById('rate-section');
+    const rb=document.getElementById('reg-btn');
+    if(role==='trainer'){
+      tc.style.display='flex'; ss.style.display='block'; rs.style.display='flex';
+      rb.textContent=''; rb.innerHTML='Apply as Trainer <i data-lucide="arrow-right" style="width:18px;height:18px;margin-left:6px"></i>';
+      rb.classList.add('gold');
+    } else {
+      tc.style.display='none'; ss.style.display='none'; rs.style.display='none';
+      rb.innerHTML='Create Account <i data-lucide="arrow-right" style="width:18px;height:18px;margin-left:6px"></i>';
+      rb.classList.remove('gold');
+    }
+    lucide.createIcons();
+  }
+
+  // Specialty chips
+  function toggleChip(el){ el.classList.toggle('picked'); }
+
+  // Eye toggle
+  function toggleEye(fieldId, btn){
+    const f=document.getElementById(fieldId);
+    const isPass=f.type==='password';
+    f.type=isPass?'text':'password';
+    btn.innerHTML=isPass
+      ?'<i data-lucide="eye-off" style="width:18px;height:18px"></i>'
+      :'<i data-lucide="eye" style="width:18px;height:18px"></i>';
+    lucide.createIcons();
+  }
+
+  // Forgot password
+  function showForgot(){
+    alert('Password reset link will be sent to your email.');
+  }
+
+  // Sign in handler
+  function handleSignIn(){
+    const email=document.getElementById('si-email').value.trim();
+    const pass=document.getElementById('si-pass').value;
+    if(!email||!pass){ shakeBtn('.form-panel.show .btn-primary'); return; }
+    window.location.href='./03-home.html';
+  }
+
+  // Register handler
+  function handleRegister(){
+    const name=document.getElementById('reg-name').value.trim();
+    const email=document.getElementById('reg-email').value.trim();
+    const pass=document.getElementById('reg-pass').value;
+    if(!name||!email||!pass){ shakeBtn('#reg-btn'); return; }
+    window.location.href='./03-home.html';
+  }
+
+  // Social login
+  function handleSocial(){
+    window.location.href='./03-home.html';
+  }
+
+  // Shake animation for validation
+  function shakeBtn(selector){
+    const btn=document.querySelector(selector);
+    if(!btn) return;
+    btn.style.animation='shake 0.4s ease';
+    setTimeout(()=>btn.style.animation='',450);
+  }
+
+  // Inject shake keyframe
+  const style=document.createElement('style');
+  style.textContent=`@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}`;
+  document.head.appendChild(style);
+</script>
+</body>
+</html>
