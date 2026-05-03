@@ -20,7 +20,7 @@ export default function NishaMaaPage() {
     name: "Maa Nisha Kabir",
     title: "Founder & Lead Spiritual Healer",
     subtitle: "Reiki Master | Transformational Trainer | Himalayan Practitioner",
-    image: "/img/team/nisha-maa.jpg",
+    image: "/img/team/nisha-maa.JPG",
     
     introduction: {
       text: "Maa Nisha Majhi is a dedicated spiritual healer and transformational trainer with over 12 years of continuous Sadhana (spiritual practice). Beginning her spiritual journey at the young age of 14, she has immersed herself in deep meditation, spending two years in a Himalayan cave refining her spiritual practice. For the past six years, she has been actively engaged in the healing field, guiding individuals through Reiki, sound healing, and energy therapies.",
