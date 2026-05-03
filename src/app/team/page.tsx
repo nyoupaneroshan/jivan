@@ -36,7 +36,7 @@ export default function TeamPage() {
       link: "/team/maa-nisha",
       role: "Founder & Lead Instructor",
       bio: "With over 15 years of experience in traditional yoga and holistic healing, Nisha Maa is the visionary founder of Jivan Parivartan. Her deep understanding of Ashtanga Mahayoga, Pranayama, and spiritual practices guides our entire wellness philosophy.",
-      image: "/img/team/nisha-maa.jpg",
+      image: "/img/team/nisha-maa.JPG",
       specialties: ["Ashtanga Yoga", "Meditation", "Spiritual Guidance", "Pranayama"],
       contact: {
         email: "nisha@jivanparivartan.com",
