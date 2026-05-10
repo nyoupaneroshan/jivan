@@ -1,23 +1,54 @@
 import { NextResponse } from "next/server";
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: Request) {
-  const body = await req.json().catch(() => null);
+  try {
+    const body = await req.json();
 
-  if (!body) {
-    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+    const {
+      firstname,
+      lastname,
+      email,
+      phone,
+      subject,
+      message,
+    } = body;
+
+    if (!firstname || !lastname || !email || !phone || !subject || !message) {
+      return NextResponse.json(
+        { error: "Missing required fields" },
+        { status: 400 }
+      );
+    }
+
+    await resend.emails.send({
+      from: "onboarding@resend.dev",
+      to: "jivanparivartan9@gmail.com",
+      subject: `New Contact Form: ${subject}`,
+      html: `
+        <h2>New Contact Form Submission</h2>
+
+        <p><strong>Name:</strong> ${firstname} ${lastname}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Phone:</strong> ${phone}</p>
+        <p><strong>Subject:</strong> ${subject}</p>
+
+        <hr />
+
+        <p>${message}</p>
+      `,
+    });
+
+    return NextResponse.json({ ok: true });
+
+  } catch (error) {
+    console.error(error);
+
+    return NextResponse.json(
+      { error: "Failed to send email" },
+      { status: 500 }
+    );
   }
-
-  const { firstname, lastname, email, phone, subject, message } = body;
-
-  if (!firstname || !lastname || !email || !phone || !subject || !message) {
-    return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
-  }
-
-  // Option A: just log (safe default; no credentials needed)
-  console.log("CONTACT_FORM:", { firstname, lastname, email, phone, subject, message });
-
-  // Option B: send email via SMTP/Resend/etc (tell which provider you use)
-  // Example: integrate Resend/Nodemailer here.
-
-  return NextResponse.json({ ok: true });
 }
