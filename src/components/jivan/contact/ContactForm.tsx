@@ -9,6 +9,7 @@ const SUBJECTS = [
   { value: "meditation", label: "Meditation Retreat", icon: "🧘‍♀️" },
   { value: "general", label: "General Inquiry", icon: "💬" },
   { value: "booking", label: "Booking/Scheduling", icon: "📅" },
+  { value: "healing", label: "Healing Services", icon: "🧘" },
   { value: "other", label: "Other", icon: "📝" },
 ];
 
