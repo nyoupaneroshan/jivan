@@ -99,6 +99,8 @@ export function SidebarWidget({
 }: SidebarWidgetProps) {
   const styles = variantStyles[variant];
 
+  const [loading, setLoading] = useState(false);
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -108,32 +110,79 @@ export function SidebarWidget({
   });
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert("Thank you! We'll contact you shortly.");
-    setFormData({ name: "", email: "", phone: "", course: "", message: "" });
+
+    try {
+      setLoading(true);
+
+      const response = await fetch("/api/inquiry", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert("Inquiry submitted successfully!");
+
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          course: "",
+          message: "",
+        });
+      } else {
+        alert(data.message || "Something went wrong!");
+      }
+    } catch (error) {
+      console.error("Inquiry Error:", error);
+      alert("Failed to submit inquiry.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <aside className="sticky top-24 space-y-6 hidden lg:block">
       {/* PRICE */}
       {price && (
-        <div className={`bg-white p-7 rounded-2xl shadow-lg border-t-4 ${styles.border}`}>
+        <div
+          className={`bg-white p-7 rounded-2xl shadow-lg border-t-4 ${styles.border}`}
+        >
           <h3 className="text-xl font-bold text-gray-800 mb-5 border-b pb-3">
             Course Investment
           </h3>
 
-          <div className={`bg-gradient-to-br ${styles.priceBox} p-7 rounded-xl text-center border mb-4`}>
-            <p className="text-xs uppercase tracking-widest text-gray-600 mb-2">{price.label}</p>
-            <p className={`text-5xl font-extrabold ${styles.priceText}`}>{price.amount}</p>
-            <p className="text-sm text-gray-600 mt-1">{price.duration}</p>
-            
-            {/* View All Pricing Link */}
+          <div
+            className={`bg-gradient-to-br ${styles.priceBox} p-7 rounded-xl text-center border mb-4`}
+          >
+            <p className="text-xs uppercase tracking-widest text-gray-600 mb-2">
+              {price.label}
+            </p>
+
+            <p className={`text-5xl font-extrabold ${styles.priceText}`}>
+              {price.amount}
+            </p>
+
+            <p className="text-sm text-gray-600 mt-1">
+              {price.duration}
+            </p>
+
             {price.viewAllPricingLink && (
               <Link
                 href={price.viewAllPricingLink}
@@ -146,10 +195,16 @@ export function SidebarWidget({
 
           <ul className="space-y-2">
             {price.includes.map((item, i) => (
-              <li key={i} className="flex gap-3 text-gray-700 text-sm">
-                <span className={`w-6 h-6 rounded-full bg-gradient-to-br ${styles.icon} text-white flex items-center justify-center flex-shrink-0`}>
+              <li
+                key={i}
+                className="flex gap-3 text-gray-700 text-sm"
+              >
+                <span
+                  className={`w-6 h-6 rounded-full bg-gradient-to-br ${styles.icon} text-white flex items-center justify-center flex-shrink-0`}
+                >
                   ✓
                 </span>
+
                 <span>{item}</span>
               </li>
             ))}
@@ -159,7 +214,9 @@ export function SidebarWidget({
 
       {/* INQUIRY FORM */}
       {showInquiryForm && (
-        <div className={`bg-white p-7 rounded-2xl shadow-lg border-t-4 ${styles.border}`}>
+        <div
+          className={`bg-white p-7 rounded-2xl shadow-lg border-t-4 ${styles.border}`}
+        >
           <h3 className="text-xl font-bold text-gray-800 mb-5 border-b pb-3">
             Quick Inquiry
           </h3>
@@ -172,7 +229,11 @@ export function SidebarWidget({
               onChange={handleChange}
               required
               className={inputBase}
-              style={{ "--tw-ring-color": styles.accentColor } as React.CSSProperties}
+              style={
+                {
+                  "--tw-ring-color": styles.accentColor,
+                } as React.CSSProperties
+              }
             />
 
             <input
@@ -183,7 +244,11 @@ export function SidebarWidget({
               onChange={handleChange}
               required
               className={inputBase}
-              style={{ "--tw-ring-color": styles.accentColor } as React.CSSProperties}
+              style={
+                {
+                  "--tw-ring-color": styles.accentColor,
+                } as React.CSSProperties
+              }
             />
 
             <input
@@ -194,7 +259,11 @@ export function SidebarWidget({
               onChange={handleChange}
               required
               className={inputBase}
-              style={{ "--tw-ring-color": styles.accentColor } as React.CSSProperties}
+              style={
+                {
+                  "--tw-ring-color": styles.accentColor,
+                } as React.CSSProperties
+              }
             />
 
             <select
@@ -203,7 +272,11 @@ export function SidebarWidget({
               onChange={handleChange}
               required
               className={inputBase}
-              style={{ "--tw-ring-color": styles.accentColor } as React.CSSProperties}
+              style={
+                {
+                  "--tw-ring-color": styles.accentColor,
+                } as React.CSSProperties
+              }
             >
               <option value="">Select Program *</option>
               <option value="1-day">1-Day Retreat</option>
@@ -220,14 +293,19 @@ export function SidebarWidget({
               value={formData.message}
               onChange={handleChange}
               className={`${inputBase} resize-none`}
-              style={{ "--tw-ring-color": styles.accentColor } as React.CSSProperties}
+              style={
+                {
+                  "--tw-ring-color": styles.accentColor,
+                } as React.CSSProperties
+              }
             />
 
             <button
               type="submit"
-              className={`w-full bg-gradient-to-br ${styles.button} text-white py-4 rounded-lg font-semibold text-base transition-all hover:shadow-xl hover:scale-[1.02]`}
+              disabled={loading}
+              className={`w-full bg-gradient-to-br ${styles.button} text-white py-4 rounded-lg font-semibold text-base transition-all hover:shadow-xl hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed`}
             >
-              Submit Inquiry →
+              {loading ? "Submitting..." : "Submit Inquiry →"}
             </button>
           </form>
         </div>
@@ -235,20 +313,33 @@ export function SidebarWidget({
 
       {/* BATCHES */}
       {batches && (
-        <div className={`bg-white p-7 rounded-2xl shadow-lg border-t-4 ${styles.border}`}>
+        <div
+          className={`bg-white p-7 rounded-2xl shadow-lg border-t-4 ${styles.border}`}
+        >
           <h3 className="text-xl font-bold text-gray-800 mb-5 border-b pb-3">
             Upcoming Batches
           </h3>
 
           <ul className="space-y-3">
             {batches.map((b, i) => (
-              <li key={i} className="flex gap-3 text-gray-700 text-sm">
-                <span className={`w-6 h-6 rounded-full bg-gradient-to-br ${styles.icon} text-white flex items-center justify-center flex-shrink-0`}>
+              <li
+                key={i}
+                className="flex gap-3 text-gray-700 text-sm"
+              >
+                <span
+                  className={`w-6 h-6 rounded-full bg-gradient-to-br ${styles.icon} text-white flex items-center justify-center flex-shrink-0`}
+                >
                   📅
                 </span>
+
                 <span>
                   <strong>{b.date}</strong>
-                  {b.label && <span className="text-xs text-gray-500 ml-1">({b.label})</span>}
+
+                  {b.label && (
+                    <span className="text-xs text-gray-500 ml-1">
+                      ({b.label})
+                    </span>
+                  )}
                 </span>
               </li>
             ))}
@@ -258,20 +349,31 @@ export function SidebarWidget({
 
       {/* CONTACT */}
       {contact && (
-        <div className={`bg-white p-7 rounded-2xl shadow-lg border-t-4 ${styles.border}`}>
+        <div
+          className={`bg-white p-7 rounded-2xl shadow-lg border-t-4 ${styles.border}`}
+        >
           <h3 className="text-xl font-bold text-gray-800 mb-5 border-b pb-3">
             Contact Us
           </h3>
 
           <div className="space-y-3 text-sm text-gray-700">
             {contact.phone.map((p, i) => (
-              <a key={i} href={`tel:${p}`} className="block hover:text-gray-900 font-medium transition-colors">
+              <a
+                key={i}
+                href={`tel:${p}`}
+                className="block hover:text-gray-900 font-medium transition-colors"
+              >
                 📞 {p}
               </a>
             ))}
-            <a href={`mailto:${contact.email}`} className="block hover:text-gray-900 font-medium transition-colors">
+
+            <a
+              href={`mailto:${contact.email}`}
+              className="block hover:text-gray-900 font-medium transition-colors"
+            >
               ✉️ {contact.email}
             </a>
+
             <p>📍 {contact.address}</p>
           </div>
         </div>
