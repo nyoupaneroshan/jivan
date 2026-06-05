@@ -6,13 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 const HERO_IMAGES = [
-  {
-    src: "/img/slider/IMG_6869.jpg",
-    title: "Retreats in the heart of nature",
-    subtitle: "Silent mornings, mindful movement, nourishing food, and space to reset deeply.",
-    ctaPrimary: { label: "Explore retreats", href: "/meditation" },
-    ctaSecondary: { label: "Talk to our team", href: "/contact" },
-  },
+  
   {
     src: "/img/slider/IMG_6882.jpg",
     title: "Yoga for every stage of practice",
