@@ -163,7 +163,7 @@ export default function AnishPage() {
     ],
 
     contact: {
-      email: "anish@jivanparivartan.com",
+      email: "info@jivanparivartan.com",
       phone: "+977 9863049261",
       bookingText: "To book a healing session or consultation with Swami Anish, or to inquire about meditation and Reiki training programs, please contact us directly.",
     },
