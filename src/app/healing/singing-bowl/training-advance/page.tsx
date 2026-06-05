@@ -638,7 +638,7 @@ export default function ProfessionalPractitionerCoursePage() {
               batches={batches}
               contact={contact}
               showInquiryForm={true}
-              variant="red"
+              variant="green"
             />
           </div>
         </div>

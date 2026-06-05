@@ -546,7 +546,7 @@ export default function TransformationProgramPage() {
               batches={batches}
               contact={contact}
               showInquiryForm={true}
-              variant="red"
+              variant="green"
             />
           </div>
         </div>

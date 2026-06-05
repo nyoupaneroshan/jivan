@@ -368,7 +368,7 @@ export default function SingingBowlHealingPage() {
               batches={batches}
               contact={contact}
               showInquiryForm={true}
-              variant="red"
+              variant="green"
             />
           </div>
         </div>

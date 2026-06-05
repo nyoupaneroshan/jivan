@@ -382,7 +382,7 @@ export default function StressManagementPage() {
               batches={batches}
               contact={contact}
               showInquiryForm={true}
-              variant="red"
+              variant="green"
             />
 
             {/* If you want the PHP “Need Urgent Help?” as a separate widget exactly, tell me your SidebarWidget API

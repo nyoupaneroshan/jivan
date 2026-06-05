@@ -678,7 +678,7 @@ export default function BasicSoundHealingCoursePage() {
               batches={batches}
               contact={contact}
               showInquiryForm={true}
-              variant="red"
+              variant="green"
             />
           </div>
         </div>

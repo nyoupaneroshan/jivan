@@ -345,7 +345,7 @@ export default function ReikiHealingSessionPage() {
               batches={batches}
               contact={contact}
               showInquiryForm={true}
-              variant="red"
+              variant="green"
             />
             
           </div>

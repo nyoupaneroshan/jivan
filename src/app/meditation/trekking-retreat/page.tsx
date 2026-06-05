@@ -430,7 +430,7 @@ export default function TrekkingRetreatPage() {
               batches={batches}
               contact={contact}
               showInquiryForm={true}
-              variant="red"
+              variant="green"
             />
           </div>
         </div>
