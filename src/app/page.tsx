@@ -16,7 +16,7 @@ export default function HomePage() {
       <ProgramsSection />
       {/* <AboutSection /> */}
       <MissionServices />
-      <GallerySection images={galleryImages} />
+      <GallerySection/>  
     </main>
   );
 }
