@@ -1,58 +1,130 @@
 // src/app/sitemap.js
-// Generates https://jivanparivartan.com/sitemap.xml
 import { navigationMenu } from "@/lib/nav";
 
-export const revalidate = 3600; // refresh every 1 hour
+export const revalidate = 3600;
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ||
   process.env.NEXT_PUBLIC_WEBSITE_URL ||
   "https://jivanparivartan.com";
 
-// --- helpers ---
+const EXCLUDED_PATHS = new Set([
+  "/404",
+  "/thank-you",
+  "/privacy-policy-draft",
+  "/admin",
+]);
+
 function normalizePath(path = "") {
   if (!path) return "/";
-  if (!path.startsWith("/")) return `/${path}`;
-  return path;
+
+  let clean = String(path).trim();
+
+  if (!clean) return "/";
+
+  if (isExternal(clean)) return null;
+  if (clean.startsWith("#")) return null;
+  if (clean.startsWith("mailto:")) return null;
+  if (clean.startsWith("tel:")) return null;
+
+  if (!clean.startsWith("/")) clean = `/${clean}`;
+
+  clean = clean.split("#")[0].split("?")[0];
+
+  if (clean.length > 1 && clean.endsWith("/")) {
+    clean = clean.slice(0, -1);
+  }
+
+  return clean;
 }
 
 function isExternal(href = "") {
   return /^https?:\/\//i.test(href);
 }
 
+function shouldInclude(path) {
+  if (!path) return false;
+  if (EXCLUDED_PATHS.has(path)) return false;
+  return true;
+}
+
 function uniqByUrl(items) {
   const map = new Map();
-  items.forEach((it) => map.set(it.url, it));
+  for (const item of items) {
+    if (!item?.url) continue;
+    map.set(item.url, item);
+  }
   return [...map.values()];
 }
 
 function flattenNav(items = []) {
   const out = [];
 
-  const walk = (nodeList) => {
+  function walk(nodeList = []) {
     for (const node of nodeList) {
       if (!node) continue;
 
-      // support href/url keys
       const href = node.href || node.url;
-      if (href && !isExternal(href)) out.push(normalizePath(href));
+      const normalized = normalizePath(href);
 
-      const children = []
-        .concat(node.children || [])
-        .concat(node.items || []);
+      if (normalized && shouldInclude(normalized)) {
+        out.push(normalized);
+      }
+
+      const children = [
+        ...(node.children || []),
+        ...(node.items || []),
+      ];
 
       if (children.length) walk(children);
     }
-  };
+  }
 
   walk(items);
   return out;
 }
 
+function getPriority(path) {
+  if (path === "/") return 1.0;
+
+  const highPriorityRoutes = new Set([
+    "/about",
+    "/contact",
+    "/programs",
+    "/meditation",
+    "/reiki",
+    "/singing-bowl",
+    "/training",
+    "/corporate-retreat",
+    "/meditation-retreat",
+  ]);
+
+  if (highPriorityRoutes.has(path)) return 0.9;
+
+  const depth = path.split("/").filter(Boolean).length;
+  if (depth === 1) return 0.8;
+  if (depth === 2) return 0.7;
+
+  return 0.6;
+}
+
+function getChangeFrequency(path) {
+  if (path === "/") return "weekly";
+
+  const frequentlyUpdatedRoutes = new Set([
+    "/programs",
+    "/gallery",
+    "/blog",
+  ]);
+
+  if (frequentlyUpdatedRoutes.has(path)) return "weekly";
+
+  return "monthly";
+}
+
 export default async function sitemap() {
   const now = new Date();
 
-  // Base static routes (add/remove as needed)
   const staticRoutes = [
     "/",
     "/about",
@@ -67,25 +139,18 @@ export default async function sitemap() {
     "/corporate-retreat",
   ];
 
-  // Pull routes from your nav too (so menu changes auto-update sitemap)
   const navRoutes = flattenNav(navigationMenu);
 
-  const routes = [...new Set([...staticRoutes, ...navRoutes])];
+  const routes = [...new Set([...staticRoutes, ...navRoutes])]
+    .map(normalizePath)
+    .filter((path) => path && shouldInclude(path));
 
-  const entries = routes.map((path) => {
-    const url = `${SITE_URL}${normalizePath(path)}`;
-
-    // Simple SEO defaults (tweak priorities if you want)
-    const isHome = path === "/";
-    const isTopLevel = path.split("/").filter(Boolean).length <= 1;
-
-    return {
-      url,
-      lastModified: now,
-      changeFrequency: isHome ? "weekly" : isTopLevel ? "monthly" : "monthly",
-      priority: isHome ? 1 : isTopLevel ? 0.8 : 0.6,
-    };
-  });
+  const entries = routes.map((path) => ({
+    url: `${SITE_URL}${path}`,
+    lastModified: now,
+    changeFrequency: getChangeFrequency(path),
+    priority: getPriority(path),
+  }));
 
   return uniqByUrl(entries);
 }

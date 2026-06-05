@@ -253,7 +253,7 @@ export function Footer({ onOpenAiChat }: { onOpenAiChat: () => void }) {
 
               <div className="pt-2">
                 <a
-                  href={`https://wa.me/${whatsappNumber}`}
+                  href={`https://api.whatsapp.com/send?phone=${whatsappNumber}&text=Hello%20Jivan%20Parivartan`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.12em] text-emerald-100 transition-all duration-300 hover:bg-emerald-400/15"
