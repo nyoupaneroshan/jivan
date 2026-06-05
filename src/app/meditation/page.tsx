@@ -236,7 +236,7 @@ export default function MeditationProgramsPage() {
               batches={batches}
               contact={contact}
               showInquiryForm={true}
-              variant="red"
+              variant="green"
             />
           </div>
         </div>

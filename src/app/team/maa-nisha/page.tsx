@@ -159,7 +159,7 @@ export default function NishaMaaPage() {
     ],
 
     contact: {
-      email: "nisha@jivanparivartan.com",
+      
       phone: "+977 9818514837",
       bookingText: "To book a personal session with Nisha Maa or inquire about her programs, please contact us directly.",
     },

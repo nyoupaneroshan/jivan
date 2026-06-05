@@ -1,7 +1,7 @@
 // src/components/jivan/HeroSlider.tsx
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -9,249 +9,305 @@ const HERO_IMAGES = [
   {
     src: "/img/slider/IMG_6869.jpg",
     title: "Retreats in the heart of nature",
-    subtitle: "Silent mornings, mindful movement and nourishing food.",
+    subtitle: "Silent mornings, mindful movement, nourishing food, and space to reset deeply.",
+    ctaPrimary: { label: "Explore retreats", href: "/meditation" },
+    ctaSecondary: { label: "Talk to our team", href: "/contact" },
   },
   {
     src: "/img/slider/IMG_6882.jpg",
-    title: "Yoga for every body",
-    subtitle: "Beginner‑friendly classes and advanced teacher trainings.",
+    title: "Yoga for every stage of practice",
+    subtitle: "Beginner-friendly classes, deeper immersion, and advanced teacher training paths.",
+    ctaPrimary: { label: "Explore yoga", href: "/services#yoga" },
+    ctaSecondary: { label: "Book a session", href: "/contact" },
   },
   {
     src: "/img/slider/IMG_7142.jpg",
-    title: "Meditation & inner stillness",
-    subtitle: "Guided practices to calm the mind and open the heart.",
+    title: "Meditation and inner stillness",
+    subtitle: "Guided practices designed to calm the mind, steady the breath, and open the heart.",
+    ctaPrimary: { label: "View meditation", href: "/meditation" },
+    ctaSecondary: { label: "Ask a question", href: "/contact" },
   },
   {
     src: "/img/slider/IMG_7263.jpg",
     title: "Sound healing journeys",
-    subtitle: "Himalayan singing bowls for deep relaxation.",
+    subtitle: "Himalayan singing bowls and therapeutic vibration for deep relaxation and release.",
+    ctaPrimary: { label: "Explore healing", href: "/services#healing" },
+    ctaSecondary: { label: "Enquire now", href: "/contact" },
   },
   {
     src: "/img/slider/IMG_7267.jpg",
-    title: "Reiki & energy work",
-    subtitle: "Subtle yet powerful sessions to restore balance.",
+    title: "Reiki and energy work",
+    subtitle: "Gentle yet powerful sessions that support balance, clarity, and restoration.",
+    ctaPrimary: { label: "Discover healing", href: "/services#healing" },
+    ctaSecondary: { label: "Speak with us", href: "/contact" },
   },
   {
     src: "/img/slider/Singing_Bowl.jpg",
     title: "Healing through vibration",
-    subtitle: "Experience chakra balancing with singing bowls.",
+    subtitle: "Experience chakra-balancing sound work in a grounded and nurturing setting.",
+    ctaPrimary: { label: "View programs", href: "/services#healing" },
+    ctaSecondary: { label: "Contact us", href: "/contact" },
   },
-  // {
-  //   src: "/img/slider/color-page.jpg",
-  //   title: "Transformation from within",
-  //   subtitle: "Programs designed to support long‑term change.",
-  // },
-  // {
-  //   src: "/img/slider/cream.jpg",
-  //   title: "Soft, grounded spaces",
-  //   subtitle: "A calm environment to unwind and recharge.",
-  // },
-  // {
-  //   src: "/img/slider/nepali-paper.jpg",
-  //   title: "Rooted in Nepal",
-  //   subtitle: "Traditional wisdom blended with modern understanding.",
-  // },
 ];
+
+const AUTOPLAY_MS = 6000;
+const RESUME_MS = 10000;
 
 export function HeroSlider() {
   const [index, setIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-  const [direction, setDirection] = useState<"left" | "right">("right");
+  const [isPausedByUser, setIsPausedByUser] = useState(false);
+  const resumeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  useEffect(() => {
-    if (!isAutoPlaying) return;
+  const current = HERO_IMAGES[index];
+  const total = HERO_IMAGES.length;
 
-    const interval = setInterval(() => {
-      setDirection("right");
-      setIndex((prev) => (prev + 1) % HERO_IMAGES.length);
-    }, 6000);
+  const clearResumeTimeout = () => {
+    if (resumeTimeoutRef.current) {
+      clearTimeout(resumeTimeoutRef.current);
+      resumeTimeoutRef.current = null;
+    }
+  };
 
-    return () => clearInterval(interval);
-  }, [isAutoPlaying]);
+  const scheduleResume = useCallback(() => {
+    clearResumeTimeout();
+    resumeTimeoutRef.current = setTimeout(() => {
+      if (!isPausedByUser) setIsAutoPlaying(true);
+    }, RESUME_MS);
+  }, [isPausedByUser]);
 
-  const go = useCallback((dir: number) => {
-    setIsAutoPlaying(false);
-    setDirection(dir > 0 ? "right" : "left");
-    
-    setIndex((prev) => {
-      const next = prev + dir;
-      if (next < 0) return HERO_IMAGES.length - 1;
-      if (next >= HERO_IMAGES.length) return 0;
+  const go = useCallback(
+    (dir: number) => {
+      setIsAutoPlaying(false);
+      clearResumeTimeout();
+
+      setIndex((prev) => {
+        const next = prev + dir;
+        if (next < 0) return total - 1;
+        if (next >= total) return 0;
+        return next;
+      });
+
+      if (!isPausedByUser) scheduleResume();
+    },
+    [total, isPausedByUser, scheduleResume]
+  );
+
+  const goToSlide = useCallback(
+    (targetIndex: number) => {
+      if (targetIndex === index) return;
+
+      setIsAutoPlaying(false);
+      clearResumeTimeout();
+      setIndex(targetIndex);
+
+      if (!isPausedByUser) scheduleResume();
+    },
+    [index, isPausedByUser, scheduleResume]
+  );
+
+  const toggleAutoplay = useCallback(() => {
+    clearResumeTimeout();
+    setIsPausedByUser((prev) => {
+      const next = !prev;
+      setIsAutoPlaying(!next);
       return next;
     });
-
-    // Resume autoplay after 10 seconds
-    setTimeout(() => setIsAutoPlaying(true), 10000);
   }, []);
 
-  const goToSlide = useCallback((targetIndex: number) => {
-    setIsAutoPlaying(false);
-    setDirection(targetIndex > index ? "right" : "left");
-    setIndex(targetIndex);
-    
-    // Resume autoplay after 10 seconds
-    setTimeout(() => setIsAutoPlaying(true), 10000);
-  }, [index]);
+  useEffect(() => {
+    if (!isAutoPlaying || isPausedByUser) return;
 
-  // Keyboard navigation
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % total);
+    }, AUTOPLAY_MS);
+
+    return () => clearInterval(interval);
+  }, [isAutoPlaying, isPausedByUser, total]);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "ArrowLeft") go(-1);
       if (e.key === "ArrowRight") go(1);
+      if (e.key.toLowerCase() === " ") {
+        const target = e.target as HTMLElement | null;
+        const tag = target?.tagName?.toLowerCase();
+        if (tag !== "input" && tag !== "textarea" && tag !== "button") {
+          e.preventDefault();
+          toggleAutoplay();
+        }
+      }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [go]);
+  }, [go, toggleAutoplay]);
 
-  const current = HERO_IMAGES[index];
+  useEffect(() => {
+    return () => clearResumeTimeout();
+  }, []);
+
+  const slideLabel = useMemo(
+    () => `Slide ${index + 1} of ${total}: ${current.title}`,
+    [index, total, current.title]
+  );
 
   return (
-    <section 
-      className="relative w-screen left-1/2 right-1/2 -mx-[50vw] h-[70vh] min-h-[360px] max-h-[780px] overflow-hidden bg-black"
-      onMouseEnter={() => setIsAutoPlaying(false)}
-      onMouseLeave={() => setIsAutoPlaying(true)}
+    <section
+      className="relative left-1/2 right-1/2 -mx-[50vw] h-[76vh] min-h-[420px] max-h-[860px] w-screen overflow-hidden bg-[#0f0d0a]"
+      aria-roledescription="carousel"
+      aria-label="Featured Jivan Parivartan highlights"
+      onMouseEnter={() => {
+        if (!isPausedByUser) setIsAutoPlaying(false);
+      }}
+      onMouseLeave={() => {
+        if (!isPausedByUser) setIsAutoPlaying(true);
+      }}
+      onFocusCapture={() => {
+        if (!isPausedByUser) setIsAutoPlaying(false);
+      }}
+      onBlurCapture={() => {
+        if (!isPausedByUser) setIsAutoPlaying(true);
+      }}
     >
       {/* Slides */}
-      {HERO_IMAGES.map((item, i) => (
-        <div
-          key={item.src}
-          className={`absolute inset-0 transition-all duration-1000 ${
-            i === index 
-              ? "opacity-100 scale-100" 
-              : direction === "right"
-              ? "opacity-0 scale-105 translate-x-10"
-              : "opacity-0 scale-105 -translate-x-10"
-          }`}
-        >
-          <Image
-            src={item.src}
-            alt={item.title}
-            fill
-            className="object-cover"
-            priority={i === 0}
-          />
-        </div>
-      ))}
+      {HERO_IMAGES.map((item, i) => {
+        const isActive = i === index;
+
+        return (
+          <div
+            key={item.src}
+            className={`absolute inset-0 transition-[opacity,transform] duration-[1400ms] ease-out ${
+              isActive ? "opacity-100 scale-100" : "opacity-0 scale-[1.04]"
+            }`}
+            aria-hidden={!isActive}
+          >
+            <Image
+              src={item.src}
+              alt={isActive ? item.title : ""}
+              fill
+              priority={i === 0}
+              sizes="100vw"
+              className="object-cover"
+            />
+          </div>
+        );
+      })}
 
       {/* Overlays */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-black/45 to-black/20" />
-      
-      {/* Animated grain texture */}
-      <div className="pointer-events-none absolute inset-0 opacity-[0.015] mix-blend-overlay bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGQ9Ik0wIDBoMzAwdjMwMEgweiIgZmlsdGVyPSJ1cmwoI2EpIiBvcGFjaXR5PSIuMDUiLz48L3N2Zz4=')]" />
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_top,rgba(0,0,0,0.78),rgba(0,0,0,0.34)_45%,rgba(0,0,0,0.18))]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(16,185,129,0.08),transparent_30%),radial-gradient(circle_at_80%_30%,rgba(245,158,11,0.08),transparent_28%)]" />
+      <div className="pointer-events-none absolute inset-0 opacity-[0.02] mix-blend-overlay bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGQ9Ik0wIDBoMzAwdjMwMEgweiIgZmlsdGVyPSJ1cmwoI2EpIiBvcGFjaXR5PSIuMDUiLz48L3N2Zz4=')]" />
 
       {/* Content */}
-      <div className="relative z-10 mx-auto flex h-full max-w-6xl flex-col justify-end px-4 pb-12 sm:px-8 lg:px-10">
-        {/* Badge with animation */}
-        <div className="mb-3 inline-flex items-center gap-2 w-fit">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-white/90 animate-fade-in">
+      <div className="relative z-10 mx-auto flex h-full max-w-6xl flex-col justify-end px-5 pb-16 sm:px-8 lg:px-10">
+        <div className="mb-4 inline-flex w-fit items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 backdrop-blur-md">
+          <span className="h-2 w-2 rounded-full bg-emerald-400" />
+          <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-white/88">
             Welcome to Jivan Parivartan
           </p>
         </div>
 
-        {/* Title with slide-in animation */}
-        <h1 
-          key={`title-${index}`}
-          className="max-w-2xl text-2xl font-bold text-white sm:text-3xl md:text-4xl lg:text-5xl animate-slide-up leading-tight"
-        >
-          {current.title}
-        </h1>
+        <div className="max-w-3xl">
+          <p className="sr-only" aria-live="polite">
+            {slideLabel}
+          </p>
 
-        {/* Subtitle with delayed slide-in */}
-        <p 
-          key={`subtitle-${index}`}
-          className="mt-4 max-w-xl text-sm text-white/90 sm:text-base md:text-lg animate-slide-up-delayed leading-relaxed"
-        >
-          {current.subtitle}
-        </p>
+          <h1
+            key={`title-${index}`}
+            className="max-w-2xl text-3xl font-extrabold leading-[1.05] text-white sm:text-4xl md:text-5xl lg:text-6xl"
+          >
+            {current.title}
+          </h1>
 
-        {/* CTA Buttons with staggered animation */}
-        <div className="mt-6 flex flex-wrap gap-3">
-          <Link
-            href="/meditation"
-            className="group pointer-events-auto relative overflow-hidden rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 animate-fade-in-1"
+          <p
+            key={`subtitle-${index}`}
+            className="mt-5 max-w-xl text-sm leading-relaxed text-white/84 sm:text-base md:text-lg"
           >
-            <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-            <span className="relative">Explore retreats</span>
-          </Link>
-          <Link
-            href="/contact"
-            className="group pointer-events-auto relative overflow-hidden rounded-full border-2 border-white/80 bg-white/10 backdrop-blur-md px-6 py-3 text-sm font-semibold text-white hover:bg-white/20 hover:border-white transition-all duration-300 hover:scale-105 animate-fade-in-2"
-          >
-            <span className="relative">Talk to our team</span>
-          </Link>
+            {current.subtitle}
+          </p>
+
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link
+              href={current.ctaPrimary.href}
+              className="inline-flex items-center justify-center rounded-full bg-emerald-600 px-6 py-3 text-sm font-bold text-white shadow-[0_10px_30px_rgba(5,150,105,0.35)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-emerald-500"
+            >
+              {current.ctaPrimary.label}
+            </Link>
+
+            <Link
+              href={current.ctaSecondary.href}
+              className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-6 py-3 text-sm font-bold text-white backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/16"
+            >
+              {current.ctaSecondary.label}
+            </Link>
+          </div>
         </div>
       </div>
 
-      {/* Navigation Arrows */}
+      {/* Arrows */}
       <button
         type="button"
         onClick={() => go(-1)}
-        className="group pointer-events-auto absolute left-4 sm:left-6 top-1/2 flex -translate-y-1/2 items-center justify-center rounded-full bg-black/50 backdrop-blur-md p-3 sm:p-4 text-white shadow-xl hover:bg-black/70 transition-all duration-300 hover:scale-110 active:scale-95"
+        className="absolute left-4 top-1/2 z-20 flex -translate-y-1/2 items-center justify-center rounded-full border border-white/10 bg-black/35 p-3 text-white backdrop-blur-md transition-all duration-300 hover:bg-black/55 sm:left-6 sm:p-4"
         aria-label="Previous slide"
       >
-        <svg className="w-5 h-5 sm:w-6 sm:h-6 transition-transform duration-300 group-hover:-translate-x-1" fill="currentColor" viewBox="0 0 20 20">
-          <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
+        <svg className="h-5 w-5 sm:h-6 sm:w-6" fill="currentColor" viewBox="0 0 20 20">
+          <path
+            fillRule="evenodd"
+            d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+            clipRule="evenodd"
+          />
         </svg>
       </button>
 
       <button
         type="button"
         onClick={() => go(1)}
-        className="group pointer-events-auto absolute right-4 sm:right-6 top-1/2 flex -translate-y-1/2 items-center justify-center rounded-full bg-black/50 backdrop-blur-md p-3 sm:p-4 text-white shadow-xl hover:bg-black/70 transition-all duration-300 hover:scale-110 active:scale-95"
+        className="absolute right-4 top-1/2 z-20 flex -translate-y-1/2 items-center justify-center rounded-full border border-white/10 bg-black/35 p-3 text-white backdrop-blur-md transition-all duration-300 hover:bg-black/55 sm:right-6 sm:p-4"
         aria-label="Next slide"
       >
-        <svg className="w-5 h-5 sm:w-6 sm:h-6 transition-transform duration-300 group-hover:translate-x-1" fill="currentColor" viewBox="0 0 20 20">
-          <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+        <svg className="h-5 w-5 sm:h-6 sm:w-6" fill="currentColor" viewBox="0 0 20 20">
+          <path
+            fillRule="evenodd"
+            d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+            clipRule="evenodd"
+          />
         </svg>
       </button>
 
-      {/* Progress bar & Dots */}
-      <div className="pointer-events-auto absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3">
-        {/* Counter */}
-        <div className="rounded-full bg-black/60 backdrop-blur-md px-4 py-2 text-xs font-semibold text-white/90 shadow-lg border border-white/10">
-          <span className="tabular-nums">{String(index + 1).padStart(2, '0')}</span>
-          <span className="text-white/50 mx-1.5">/</span>
-          <span className="text-white/70 tabular-nums">{String(HERO_IMAGES.length).padStart(2, '0')}</span>
+      {/* Controls */}
+      <div className="absolute bottom-6 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-3">
+        <div className="rounded-full border border-white/10 bg-black/45 px-4 py-2 text-xs font-semibold text-white/92 backdrop-blur-md">
+          <span className="tabular-nums">{String(index + 1).padStart(2, "0")}</span>
+          <span className="mx-1.5 text-white/45">/</span>
+          <span className="tabular-nums text-white/70">{String(total).padStart(2, "0")}</span>
         </div>
 
-        {/* Dots */}
-        <div className="flex gap-2 p-2 rounded-full bg-black/60 backdrop-blur-md shadow-lg border border-white/10">
-          {HERO_IMAGES.map((_, i) => (
+        <div className="flex items-center gap-2 rounded-full border border-white/10 bg-black/45 px-3 py-2 backdrop-blur-md">
+          {HERO_IMAGES.map((slide, i) => (
             <button
-              key={i}
+              key={slide.src}
               type="button"
               onClick={() => goToSlide(i)}
-              className={`group relative h-2 rounded-full transition-all duration-300 ${
-                i === index 
-                  ? "w-8 bg-emerald-500" 
-                  : "w-2 bg-white/40 hover:bg-white/60 hover:w-4"
-              }`}
               aria-label={`Go to slide ${i + 1}`}
-            >
-              {/* Progress indicator for active slide */}
-              {i === index && isAutoPlaying && (
-                <div 
-                  className="absolute inset-0 bg-emerald-600 rounded-full origin-left animate-progress"
-                  style={{ animationDuration: '6s' }}
-                />
-              )}
-            </button>
+              aria-current={i === index ? "true" : undefined}
+              className={`relative h-2 rounded-full transition-all duration-300 ${
+                i === index ? "w-8 bg-emerald-500" : "w-2 bg-white/40 hover:bg-white/65"
+              }`}
+            />
           ))}
         </div>
 
-        {/* Pause/Play indicator */}
-        <div className="text-[10px] text-white/50 uppercase tracking-wider font-medium">
-          {isAutoPlaying ? (
-            <span className="flex items-center gap-1.5">
-              <span className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" />
-              Auto-playing
-            </span>
-          ) : (
-            <span>Paused</span>
-          )}
-        </div>
+        <button
+          type="button"
+          onClick={toggleAutoplay}
+          className="rounded-full border border-white/10 bg-black/45 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-white/80 backdrop-blur-md transition-all duration-300 hover:bg-black/60 hover:text-white"
+          aria-pressed={!isAutoPlaying}
+          aria-label={isAutoPlaying ? "Pause autoplay" : "Resume autoplay"}
+        >
+          {isAutoPlaying ? "Pause" : "Play"}
+        </button>
       </div>
     </section>
   );
