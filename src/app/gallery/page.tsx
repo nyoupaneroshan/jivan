@@ -177,9 +177,9 @@ export default function GalleryPage() {
     document.body.style.overflow = "hidden";
   };
   const closeLightbox = () => {
-    setLightbox(null);
-    document.body.style.overflow = "unset";
-  };
+  setLightbox(null);
+  document.body.style.overflow = "";
+};
   const goToPrevious = () => {
     if (lightbox === null) return;
     setLightbox(lightbox === 0 ? filtered.length - 1 : lightbox - 1);
@@ -280,42 +280,62 @@ export default function GalleryPage() {
         )}
       </div>
 
-      {/* Lightbox */}
-      {lightbox !== null && filtered[lightbox] && (
-        <div className="fixed inset-0 z-[9999] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4">
-          <button
-            onClick={closeLightbox}
-            className="absolute top-4 right-4 w-12 h-12 rounded-full bg-white/10 backdrop-blur hover:bg-white/20 flex items-center justify-center text-white transition-transform duration-300 hover:scale-110"
-            aria-label="Close lightbox"
-          >
-            <X size={24} />
-          </button>
+     {/* Lightbox */}
+{lightbox !== null && filtered[lightbox] && (
+  <div
+    className="fixed inset-0 z-[9999] bg-black/95 backdrop-blur-sm flex items-center justify-center p-4"
+    onClick={closeLightbox}
+  >
+    {/* Close Button */}
+    <button
+      onClick={(e) => {
+        e.stopPropagation();
+        closeLightbox();
+      }}
+      className="absolute top-4 right-4 z-[10001] w-12 h-12 rounded-full bg-white/20 backdrop-blur hover:bg-white/30 flex items-center justify-center text-white transition-all duration-300 hover:scale-110"
+      aria-label="Close lightbox"
+    >
+      <X size={24} />
+    </button>
 
-          <button
-            onClick={goToPrevious}
-            className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 backdrop-blur hover:bg-white/20 flex items-center justify-center text-white transition-transform duration-300 hover:scale-110"
-            aria-label="Previous image"
-          >
-            <ChevronLeft size={24} />
-          </button>
+    {/* Previous Button */}
+    <button
+      onClick={(e) => {
+        e.stopPropagation();
+        goToPrevious();
+      }}
+      className="absolute left-4 top-1/2 -translate-y-1/2 z-[10001] w-12 h-12 rounded-full bg-white/20 backdrop-blur hover:bg-white/30 flex items-center justify-center text-white transition-all duration-300 hover:scale-110"
+      aria-label="Previous image"
+    >
+      <ChevronLeft size={24} />
+    </button>
 
-          <button
-            onClick={goToNext}
-            className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 backdrop-blur hover:bg-white/20 flex items-center justify-center text-white transition-transform duration-300 hover:scale-110"
-            aria-label="Next image"
-          >
-            <ChevronRight size={24} />
-          </button>
+    {/* Next Button */}
+    <button
+      onClick={(e) => {
+        e.stopPropagation();
+        goToNext();
+      }}
+      className="absolute right-4 top-1/2 -translate-y-1/2 z-[10001] w-12 h-12 rounded-full bg-white/20 backdrop-blur hover:bg-white/30 flex items-center justify-center text-white transition-all duration-300 hover:scale-110"
+      aria-label="Next image"
+    >
+      <ChevronRight size={24} />
+    </button>
 
-          <div className="relative w-full h-full flex items-center justify-center">
-  <img
-    src={filtered[lightbox].src}
-    alt={filtered[lightbox].alt}
-    className="max-w-[95vw] max-h-[95vh] object-contain"
-  />
-</div>  
-        </div>
-      )}
+    {/* Image Container */}
+    <div
+      className="relative z-[10000] flex items-center justify-center w-full h-full"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <img
+        src={filtered[lightbox].src}
+        alt={filtered[lightbox].alt}
+        className="max-w-[95vw] max-h-[95vh] object-contain select-none"
+        draggable={false}
+      />
+    </div>
+  </div>
+)}
     </div>
   );
 }
