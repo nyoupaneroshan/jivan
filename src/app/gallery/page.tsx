@@ -307,13 +307,13 @@ export default function GalleryPage() {
             <ChevronRight size={24} />
           </button>
 
-          <div className="relative max-w-6xl max-h-[90vh] w-full animate-fadeUp">
-            <img
-              src={filtered[lightbox].src}
-              alt={filtered[lightbox].alt}
-              className="w-full h-full object-contain rounded-lg"
-            />
-          </div>
+          <div className="relative w-full h-full flex items-center justify-center">
+  <img
+    src={filtered[lightbox].src}
+    alt={filtered[lightbox].alt}
+    className="max-w-[95vw] max-h-[95vh] object-contain"
+  />
+</div>  
         </div>
       )}
     </div>
