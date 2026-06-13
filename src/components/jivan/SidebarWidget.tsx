@@ -471,11 +471,11 @@ export function SidebarWidget({
                 <p className="text-[11px] text-center text-[#A09990] leading-relaxed">
                   By submitting, you agree to our{" "}
                   <Link
-                    href="/privacy-policy"
+                    href="/terms"
                     className="underline hover:opacity-70"
                     style={{ color: v.accentMid }}
                   >
-                    privacy policy
+                    terms of service
                   </Link>
                   .
                 </p>
