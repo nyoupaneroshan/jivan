@@ -51,7 +51,7 @@ export default function ContactInfoGrid() {
       title: "Visit Us",
       content: (
         <>
-          <p className="font-medium text-gray-800">Tarkeshwor-5, Kathmandu</p>
+          <p className="font-medium text-gray-800">Tarkeshwor-5, Kathmandu,</p>
           <p className="text-gray-600">Nepal</p>
           <Link
             href="https://maps.app.goo.gl/6xiegSAstMekeJgo8"

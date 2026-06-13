@@ -88,7 +88,7 @@ export default function ContactHero() {
                 Visit Us
               </div>
               <div className="text-sm md:text-base font-semibold">
-                Tarkeshwor-5, Kathmandu
+                Goldhunga, Devisthan, Tarkeshwor-5
               </div>
             </div>
           </div>
